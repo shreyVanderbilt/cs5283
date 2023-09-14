@@ -18,7 +18,7 @@ import argparse  # argument parser
 
 ## the following are our files
 from custom_msg import CustomMessage  # our custom message in native format
-import serialize as sz  # this is from the file serialize.py in the same directory
+import serialize_json as sz  # this is from the file serialize.py in the same directory
 
 ##################################
 #        Driver program
