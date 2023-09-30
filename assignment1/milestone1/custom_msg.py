@@ -10,11 +10,34 @@ from typing import List
 from dataclasses import dataclass
 from enum import Enum
 
+
+class MILK_TYPE(Enum):
+    whole = 0
+    _1 = 1
+    _2 = 2
+    fat_free = 3
+    almond = 4
+    cashew = 5
+    oat = 6
+
+class BREAD_TYPE(Enum):
+    whole_wheat = 0
+    pumpernickel = 1
+    rye = 2
+    gluten_free = 3
+ 
+class MEAT_TYPE(Enum):
+  chicken = 0
+  beef = 1
+  turkey = 2
+  ham = 3
+
+
 @dataclass
 class MILK:
 
-  milk_type: Enum
-  milk_quantity: float
+  milk_type: MILK_TYPE = MILK_TYPE._2.value
+  milk_quantity: float = 0
   
   def __init__ (self):
     pass
@@ -22,8 +45,8 @@ class MILK:
 @dataclass
 class BREAD:
 
-  bread_type: Enum
-  bread_quantity: float
+  bread_type: BREAD_TYPE = BREAD_TYPE.whole_wheat.value
+  bread_quantity: float = 0
   
   def __init__ (self):
     pass
@@ -31,8 +54,8 @@ class BREAD:
 @dataclass
 class MEAT:
 
-  meat_type: Enum
-  meat_quantity: float
+  meat_type: MEAT_TYPE = MEAT_TYPE.beef.value
+  meat_quantity: float = 0
   
   def __init__ (self):
     pass
@@ -40,10 +63,10 @@ class MEAT:
 @dataclass
 class BOTTLES:
 
-  sprite: int 
-  fanta: int
-  pepsi: int
-  mtn_dew: int
+  sprite: int = 0
+  fanta: int = 0
+  pepsi: int = 0
+  mtn_dew: int = 0
   
   def __init__ (self):
     pass
@@ -51,9 +74,9 @@ class BOTTLES:
 @dataclass
 class CANS:
 
-  coke: int
-  bud_light: int
-  miller_lite: int 
+  coke: int = 0
+  bud_light: int = 0
+  miller_lite: int = 0
   
   def __init__ (self):
     pass
@@ -68,12 +91,12 @@ class DRINKS:
 
 @dataclass
 class VEGGIES:
-  tomato: float
-  cucumber: float
-  pickle: float
-  jalapeno: float
-  mushroom: float
-  onion: float
+  tomato: float = 0.0
+  cucumber: float = 0.0
+  pickle: float = 0.0
+  jalapeno: float = 0.0
+  mushroom: float = 0.0
+  onion: float = 0.0
 
   def __init__ (self):
     pass

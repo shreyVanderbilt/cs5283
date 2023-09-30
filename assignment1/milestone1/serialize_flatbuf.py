@@ -24,7 +24,6 @@ import numpy as np  # to use in our vector field
 import zmq   # we need this for additional constraints provided by the zmq serialization
 
 from custom_msg import CustomOrder  # our custom message in native format
-from CustomAppProto.Message import msg
 import OrderAppProto.BOTTLES as bottles   # this is the generated code by the flatc compiler
 import OrderAppProto.BREAD as bread   # this is the generated code by the flatc compiler
 import OrderAppProto.BREAD_TYPE as bread_type   # this is the generated code by the flatc compiler
@@ -42,15 +41,10 @@ import OrderAppProto.VEGGIES as veggies   # this is the generated code by the fl
 # Note that if you have have multiple different message types, we could have
 # separate such serialize/deserialize methods, or a single method can check what
 # type of message it is and accordingly take actions.
-def serialize (temp):
+def serialize (cm):
     # first obtain the builder object that is used to create an in-memory representation
     # of the serialized object from the custom message
     builder = flatbuffers.Builder (0);
-
-    # create the name string for the name field using
-    # the parameter we passed
-    
-    cm = CustomOrder();
     
     veggies.Start(builder)
     veggies.AddTomato(builder, cm.content.veggies.tomato)
@@ -70,43 +64,45 @@ def serialize (temp):
     milk_array = []
     for milk_item in cm.content.milk:
        milk.Start(builder)
-       milk.AddType(builder, milk_item.milk_type)
+       milk.AddMilkType(builder, milk_item.milk_type.value)
        milk.AddQuantity(builder, milk_item.milk_quantity)
-       milk_array.append(milk.End(builder))
+       new_milk = milk.End(builder)
+       milk_array.append(new_milk)
 
     bread_array = []
     for bread_item in cm.content.bread:
        bread.Start(builder)
-       bread.AddType(builder, bread_item.bread_type)
+       bread.AddBreadType(builder, bread_item.bread_type.value)
        bread.AddQuantity(builder, bread_item.bread_quantity)
-       bread_array.append(bread.End(builder))
+       new_bread = bread.End(builder)
+       bread_array.append(new_bread)
 
     meat_array = []
     for meat_item in cm.content.meat:
        meat.Start(builder)
-       meat.AddType(builder, meat_item.meat_type)
+       meat.AddMeatType(builder, meat_item.meat_type.value)
        meat.AddQuantity(builder, meat_item.meat_quantity)
-       meat_array.append(meat.End(builder))
+       new_meat = meat.End(builder)
+       meat_array.append(new_meat)
 
-
-    content.Start(builder)
-    content.AddVeggies(builder, order_veggies)
-    content.AddDrinks(builder, order_drinks)
-    
     content.StartMilkVector(builder, len(milk_array))
     for milk_i in reversed(milk_array):
-       builder.PrependUOffsetTRelative(milk_i)
+      builder.PrependUOffsetTRelative(milk_i)
     order_milk = builder.EndVector()
 
     content.StartBreadVector(builder, len(bread_array))
     for bread_i in reversed(bread_array):
-       builder.PrependUOffsetTRelative(bread_i)
+      builder.PrependUOffsetTRelative(bread_i)
     order_bread = builder.EndVector()
 
     content.StartMeatVector(builder, len(meat_array))
     for meat_i in reversed(meat_array):
-       builder.PrependUOffsetTRelative(meat_i)
+      builder.PrependUOffsetTRelative(meat_i)
     order_meat = builder.EndVector()
+    
+    content.Start(builder)
+    content.AddVeggies(builder, order_veggies)
+    content.AddDrinks(builder, order_drinks)
 
     content.AddMilk(builder, order_milk)
     content.AddBread(builder, order_bread)
@@ -141,7 +137,6 @@ def serialize_to_frames (cm):
 def deserialize (buf):
     cm = CustomOrder();
 
-    order.ORDER.GetRootAs(buf, 0)
     packet = order.ORDER.GetRootAs(buf, 0)
 
     # sequence number
