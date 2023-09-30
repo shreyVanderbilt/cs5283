@@ -25,7 +25,7 @@ class MEAT(object):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # MEAT
-    def Type(self):
+    def MeatType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
@@ -42,10 +42,10 @@ def Start(builder): builder.StartObject(2)
 def MEATStart(builder):
     """This method is deprecated. Please switch to Start."""
     return Start(builder)
-def AddType(builder, type): builder.PrependInt8Slot(0, type, 0)
-def MEATAddType(builder, type):
-    """This method is deprecated. Please switch to AddType."""
-    return AddType(builder, type)
+def AddMeatType(builder, meatType): builder.PrependInt8Slot(0, meatType, 0)
+def MEATAddMeatType(builder, meatType):
+    """This method is deprecated. Please switch to AddMeatType."""
+    return AddMeatType(builder, meatType)
 def AddQuantity(builder, quantity): builder.PrependFloat32Slot(1, quantity, 0.0)
 def MEATAddQuantity(builder, quantity):
     """This method is deprecated. Please switch to AddQuantity."""

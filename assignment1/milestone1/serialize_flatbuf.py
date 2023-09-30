@@ -23,37 +23,100 @@ import numpy as np  # to use in our vector field
 
 import zmq   # we need this for additional constraints provided by the zmq serialization
 
-from custom_msg import CustomMessage  # our custom message in native format
-import CustomAppProto.Message as msg   # this is the generated code by the flatc compiler
+from custom_msg import CustomOrder  # our custom message in native format
+from CustomAppProto.Message import msg
+import OrderAppProto.BOTTLES as bottles   # this is the generated code by the flatc compiler
+import OrderAppProto.BREAD as bread   # this is the generated code by the flatc compiler
+import OrderAppProto.BREAD_TYPE as bread_type   # this is the generated code by the flatc compiler
+import OrderAppProto.CANS as cans   # this is the generated code by the flatc compiler
+import OrderAppProto.CONTENT as content   # this is the generated code by the flatc compiler
+import OrderAppProto.DRINKS as drinks   # this is the generated code by the flatc compiler
+import OrderAppProto.MEAT as meat   # this is the generated code by the flatc compiler
+import OrderAppProto.MEAT_TYPE as meat_type   # this is the generated code by the flatc compiler
+import OrderAppProto.MILK as milk   # this is the generated code by the flatc compiler
+import OrderAppProto.MILK_TYPE as milk_type   # this is the generated code by the flatc compiler
+import OrderAppProto.ORDER as order   # this is the generated code by the flatc compiler
+import OrderAppProto.VEGGIES as veggies   # this is the generated code by the flatc compiler
 
 # This is the method we will invoke from our driver program
 # Note that if you have have multiple different message types, we could have
 # separate such serialize/deserialize methods, or a single method can check what
 # type of message it is and accordingly take actions.
-def serialize (cm):
+def serialize (temp):
     # first obtain the builder object that is used to create an in-memory representation
     # of the serialized object from the custom message
     builder = flatbuffers.Builder (0);
 
     # create the name string for the name field using
     # the parameter we passed
-    name_field = builder.CreateString (cm.name)
     
-    # serialize our dummy array. The sample code in Flatbuffers
-    # describes doing this in reverse order
-    msg.StartDataVector (builder, len (cm.vec))
-    for i in reversed (range (len (cm.vec))):
-        builder.PrependUint32 (cm.vec[i])
-    data = builder.EndVector ()
+    cm = CustomOrder();
     
-    # let us create the serialized msg by adding contents to it.
-    # Our custom msg consists of a seq num, timestamp, name, and an array of uint32s
-    msg.Start (builder)  # serialization starts with the "Start" method
-    msg.AddSeqNo (builder, cm.seq_num)
-    msg.AddTs (builder, cm.ts)   # serialize current timestamp
-    msg.AddName (builder, name_field)  # serialize the name
-    msg.AddData (builder, data)  # serialize the dummy data
-    serialized_msg = msg.End (builder)  # get the topic of all these fields
+    veggies.Start(builder)
+    veggies.AddTomato(builder, cm.content.veggies.tomato)
+    veggies.AddCucumber(builder, cm.content.veggies.cucumber)
+    veggies.AddPickle(builder, cm.content.veggies.pickle)
+    veggies.AddJalapeno(builder, cm.content.veggies.jalapeno)
+    veggies.AddMushroom(builder, cm.content.veggies.mushroom)
+    veggies.AddOnion(builder, cm.content.veggies.onion)
+    order_veggies = veggies.End(builder)
+
+    drinks.Start(builder)
+    drinks.AddBottles(builder, bottles.CreateBOTTLES(builder, cm.content.drinks.bottle.sprite, cm.content.drinks.bottle.fanta, cm.content.drinks.bottle.pepsi, cm.content.drinks.bottle.mtn_dew))
+    drinks.AddCans(builder, cans.CreateCANS(builder, cm.content.drinks.can.coke, cm.content.drinks.can.bud_light, cm.content.drinks.can.miller_lite))
+    order_drinks = drinks.End(builder)
+
+
+    milk_array = []
+    for milk_item in cm.content.milk:
+       milk.Start(builder)
+       milk.AddType(builder, milk_item.milk_type)
+       milk.AddQuantity(builder, milk_item.milk_quantity)
+       milk_array.append(milk.End(builder))
+
+    bread_array = []
+    for bread_item in cm.content.bread:
+       bread.Start(builder)
+       bread.AddType(builder, bread_item.bread_type)
+       bread.AddQuantity(builder, bread_item.bread_quantity)
+       bread_array.append(bread.End(builder))
+
+    meat_array = []
+    for meat_item in cm.content.meat:
+       meat.Start(builder)
+       meat.AddType(builder, meat_item.meat_type)
+       meat.AddQuantity(builder, meat_item.meat_quantity)
+       meat_array.append(meat.End(builder))
+
+
+    content.Start(builder)
+    content.AddVeggies(builder, order_veggies)
+    content.AddDrinks(builder, order_drinks)
+    
+    content.StartMilkVector(builder, len(milk_array))
+    for milk_i in reversed(milk_array):
+       builder.PrependUOffsetTRelative(milk_i)
+    order_milk = builder.EndVector()
+
+    content.StartBreadVector(builder, len(bread_array))
+    for bread_i in reversed(bread_array):
+       builder.PrependUOffsetTRelative(bread_i)
+    order_bread = builder.EndVector()
+
+    content.StartMeatVector(builder, len(meat_array))
+    for meat_i in reversed(meat_array):
+       builder.PrependUOffsetTRelative(meat_i)
+    order_meat = builder.EndVector()
+
+    content.AddMilk(builder, order_milk)
+    content.AddBread(builder, order_bread)
+    content.AddMeat(builder, order_meat)
+
+    order_content = content.End(builder)  # get the topic of all these fields
+
+    order.Start(builder)
+    order.AddContents(builder, order_content)
+    serialized_msg = order.End(builder)
 
     # end the serialization process
     builder.Finish (serialized_msg)
@@ -76,24 +139,13 @@ def serialize_to_frames (cm):
   
 # deserialize the incoming serialized structure into native data type
 def deserialize (buf):
-    cm = CustomMessage ()
-    
-    packet = msg.Message.GetRootAs (buf, 0)
+    cm = CustomOrder();
+
+    order.ORDER.GetRootAs(buf, 0)
+    packet = order.ORDER.GetRootAs(buf, 0)
 
     # sequence number
-    cm.seq_num = packet.SeqNo ()
-
-    # timestamp received
-    cm.ts = packet.Ts ()
-
-    # name received
-    cm.name = packet.Name ()
-
-    # received vector data
-    # We can obtain the vector like this but it changes the
-    # type from List to NumpyArray, which may not be what one wants.
-    #cm.vec = packet.DataAsNumpy ()
-    cm.vec = [packet.Data (j) for j in range (packet.DataLength ())]
+    cm.content = packet.Contents()
 
     return cm
     

@@ -25,7 +25,7 @@ class BREAD(object):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # BREAD
-    def Type(self):
+    def BreadType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
@@ -42,10 +42,10 @@ def Start(builder): builder.StartObject(2)
 def BREADStart(builder):
     """This method is deprecated. Please switch to Start."""
     return Start(builder)
-def AddType(builder, type): builder.PrependInt8Slot(0, type, 0)
-def BREADAddType(builder, type):
-    """This method is deprecated. Please switch to AddType."""
-    return AddType(builder, type)
+def AddBreadType(builder, breadType): builder.PrependInt8Slot(0, breadType, 0)
+def BREADAddBreadType(builder, breadType):
+    """This method is deprecated. Please switch to AddBreadType."""
+    return AddBreadType(builder, breadType)
 def AddQuantity(builder, quantity): builder.PrependFloat32Slot(1, quantity, 0.0)
 def BREADAddQuantity(builder, quantity):
     """This method is deprecated. Please switch to AddQuantity."""

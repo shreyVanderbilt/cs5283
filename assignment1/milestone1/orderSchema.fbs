@@ -5,11 +5,11 @@ table ORDER{
 }
 
 table CONTENT {
-	veggies: VEGGIES;
-	drinks: DRINKS;
-	milk: [MILK];
-	bread: [BREAD];
-	meat: [MEAT];
+	veggies:VEGGIES;
+	drinks:DRINKS;
+	milk:[MILK];
+	bread:[BREAD];
+	meat:[MEAT];
 }
 
 table VEGGIES {
@@ -40,23 +40,22 @@ struct BOTTLES{
 }
 
 enum MILK_TYPE:byte { whole = 0, _1 = 1, _2 = 2, fat_free = 3, almond = 4, cashew = 5, oat = 6 }
-
-table MILK{
-	type:MILK_TYPE = whole;
-	quantity:float = 0.0;
-}
-
 enum BREAD_TYPE:byte { whole_wheat = 0, pumpernickel = 1, rye = 2, gluten_free = 3 }
-
-table BREAD{
-	type:BREAD_TYPE = whole_wheat;
-	quantity:float = 0.0;
-}
-
 enum MEAT_TYPE:byte { chicken = 0, beef = 1, turkey = 2, ham = 3 }
 
+
+table MILK{
+	milk_type:MILK_TYPE = whole;
+	quantity:float = 0.0;
+}
+
+table BREAD{
+	bread_type:BREAD_TYPE = whole_wheat;
+	quantity:float = 0.0;
+}
+
 table MEAT{
-	type:MEAT_TYPE = chicken;
+	meat_type:MEAT_TYPE = chicken;
 	quantity:float = 0.0;
 }
 

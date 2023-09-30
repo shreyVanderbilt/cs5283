@@ -8,23 +8,99 @@
 
 from typing import List
 from dataclasses import dataclass
+from enum import Enum
 
 @dataclass
-class CustomMessage:
+class MILK:
+
+  milk_type: Enum
+  milk_quantity: float
+  
+  def __init__ (self):
+    pass
+
+@dataclass
+class BREAD:
+
+  bread_type: Enum
+  bread_quantity: float
+  
+  def __init__ (self):
+    pass
+
+@dataclass
+class MEAT:
+
+  meat_type: Enum
+  meat_quantity: float
+  
+  def __init__ (self):
+    pass
+
+@dataclass
+class BOTTLES:
+
+  sprite: int 
+  fanta: int
+  pepsi: int
+  mtn_dew: int
+  
+  def __init__ (self):
+    pass
+
+@dataclass
+class CANS:
+
+  coke: int
+  bud_light: int
+  miller_lite: int 
+  
+  def __init__ (self):
+    pass
+
+@dataclass
+class DRINKS:
+  can: CANS
+  bottle: BOTTLES
+
+  def __init__ (self):
+    pass
+
+@dataclass
+class VEGGIES:
+  tomato: float
+  cucumber: float
+  pickle: float
+  jalapeno: float
+  mushroom: float
+  onion: float
+
+  def __init__ (self):
+    pass
+
+
+@dataclass
+class Content:
+  veggies: VEGGIES
+  drinks: DRINKS
+  milk: List[MILK]
+  bread: List[BREAD]
+  meat: List[MEAT]
+
+  def __init__ (self):
+    pass
+
+@dataclass
+class CustomOrder:
   """ Our message in native representation"""
-  seq_num: int  # a sequence number
-  ts: float    # timestamp
-  name: str    # some name
-  vec: List[int] # some vector of unsigned ints
+  content: Content
 
   def __init__ (self):
     pass
   
   def dump (self):
-    print ("Dumping contents of Custom Message")
-    print ("  Seq Num: {}".format (self.seq_num))
-    print ("  Timestamp: {}".format (self.ts))
-    print ("  Name: {}".format (self.name))
-    print ("  Vector type = {}".format (type (self.vec)))
-    print ("  Vector: {}".format (self.vec))
-  
+    print ("Dumping contents of Custom Order")
+    print ("  Content: {}".format (self.content))
+
+
+
