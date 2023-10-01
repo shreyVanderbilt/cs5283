@@ -79,3 +79,19 @@ message Bread {
     Bread_Type bread_type = 1;
     int32 quantity = 2;
 }
+
+enum Code {
+    BAD_REQUEST = 0;
+    OK = 1;
+}
+
+
+message Response {
+    Code code = 1;
+    string data = 2;
+}
+
+service OrderService
+{
+    rpc method (Order) returns (Response) {};
+}
