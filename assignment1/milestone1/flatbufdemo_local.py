@@ -93,7 +93,7 @@ def driver (name, iters, vec_len):
     cm.content = order_content
     
     print ("-----Iteration: {} contents of message before serializing ----------".format (i))
-    cm.dump ()
+    cm.dump_serialize ()
         
     # here we are calling our serialize method passing it
     # the iteration number, the topic identifier, and length.
@@ -113,7 +113,7 @@ def driver (name, iters, vec_len):
     print ("Deserialization took {} secs".format (end_time-start_time))
 
     print ("------ contents of message after deserializing ----------")
-    cm.dump ()
+    cm.dump_deserialize()
 
     # sleep a while before we send the next serialization so it is not
     # extremely fast
