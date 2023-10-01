@@ -48,7 +48,7 @@ class Peer ():
     self.req = None  # represents the REQ socket
     self.rep = None  # represents the REP socket
 
-  def configure (self, port, type):
+  def configure (self, port, type, ipconfig="localhost"):
     try:
       # every ZMQ session requires a context
       print ("Obtain the ZMQ context")
@@ -108,7 +108,7 @@ class Peer ():
       try:
         # as in a traditional socket, tell the system where we are going to connect
         # to.  In this code, we assume server is on localhost but port is configurable.
-        connect_string = "tcp://localhost:" + str (port)
+        connect_string = "tcp://"+str(ipconfig)+":"+ str (port)
         print ("TCP client will be connecting to {}".format (connect_string))
         self.req.connect (connect_string)
       except zmq.ZMQError as err:
@@ -208,7 +208,7 @@ class Peer ():
 #        Driver program
 ##################################
 
-def driver (iters, port, type):
+def driver (iters, port, type, address):
 
   print ("Num Iters = {}, Peer port = {}, Type = {}".format (iters, port, type))
 
@@ -216,7 +216,7 @@ def driver (iters, port, type):
   print ("Driver program: create and configure a peer object")
   peer = Peer ()
   try:
-    peer.configure (port, type)
+    peer.configure (port, type, address)
   except:
     print ("Some exception occurred")
     return
@@ -335,6 +335,7 @@ def parseCmdLineArgs ():
     # add optional arguments
     parser.add_argument ("-i", "--iters", type=int, default=10, help="Number of iterations to run (default: 10)")
     parser.add_argument ("-p", "--port", type=int, default=5555, help="Port where the server part of the peer listens and client side connects to (default: 5555)")
+    parser.add_argument ("-a", "--address", default="localhost", help="Server IP address")
     parser.add_argument ("-t", "--type", default="server", help="Provide type. server or client")
 
     # parse the args
@@ -353,7 +354,7 @@ def main ():
   parsed_args = parseCmdLineArgs ()
     
   # start the driver code
-  driver (parsed_args.iters, parsed_args.port, parsed_args.type)
+  driver (parsed_args.iters, parsed_args.port, parsed_args.type, parsed_args.address)
 
 #----------------------------------------------
 if __name__ == '__main__':
