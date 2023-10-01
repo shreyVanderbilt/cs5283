@@ -39,9 +39,8 @@ import serialize_flatbuf as sz  # this is from the file serialize.py in the same
 def driver (name, iters, vec_len):
 
   print ("Driver program: Name = {}, Num Iters = {}, Vector len = {}".format (name, iters, vec_len))
-    
-  # now publish our information for the number of desired iterations
   cm = CustomOrder()
+  # now publish our information for the number of desired iterations
   for i in range (iters):
 
     veggies = VEGGIES()

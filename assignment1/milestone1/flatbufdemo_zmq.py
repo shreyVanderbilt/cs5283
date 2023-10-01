@@ -26,7 +26,18 @@ import argparse  # argument parser
 import zmq   # for ZeroMQ
 
 ## the following are our files
-from custom_msg import CustomMessage  # our custom message in native format
+from custom_msg import CustomOrder  # our custom message in native format
+from custom_msg import MILK  # our custom message in native format
+from custom_msg import MEAT  # our custom message in native format
+from custom_msg import BREAD  # our custom message in native formfvat
+from custom_msg import DRINKS  # our custom message in native format
+from custom_msg import BOTTLES  # our custom message in native format
+from custom_msg import CANS  # our custom message in native format
+from custom_msg import VEGGIES  # our custom message in native format
+from custom_msg import MILK_TYPE
+from custom_msg import BREAD_TYPE
+from custom_msg import MEAT_TYPE
+from custom_msg import Content
 import serialize_flatbuf as sz  # this is from the file serialize.py in the same directory
 
 ##################################
@@ -37,7 +48,7 @@ class Peer ():
     self.req = None  # represents the REQ socket
     self.rep = None  # represents the REP socket
 
-  def configure (self, port):
+  def configure (self, port, type):
     try:
       # every ZMQ session requires a context
       print ("Obtain the ZMQ context")
@@ -49,70 +60,73 @@ class Peer ():
       print ("Some exception occurred getting context {}".format (sys.exc_info()[0]))
       raise
 
-    try:
-      # The socket concept in ZMQ is far more advanced than the traditional socket in
-      # networking. Each socket we obtain from the context object must be of a certain
-      # type. For TCP, we will use REP for server side (many other pairs are supported
-      # in ZMQ for tcp.
-      print ("Obtain the REP type socket")
-      self.rep = context.socket (zmq.REP)
-    except zmq.ZMQError as err:
-      print ("ZeroMQ Error obtaining REP socket: {}".format (err))
-      raise
-    except:
-      print ("Some exception occurred getting REP socket {}".format (sys.exc_info()[0]))
-      raise
+    if type == "server":
+      try:
+        # The socket concept in ZMQ is far more advanced than the traditional socket in
+        # networking. Each socket we obtain from the context object must be of a certain
+        # type. For TCP, we will use REP for server side (many other pairs are supported
+        # in ZMQ for tcp.
+        print ("Obtain the REP type socket")
+        self.rep = context.socket (zmq.REP)
+      except zmq.ZMQError as err:
+        print ("ZeroMQ Error obtaining REP socket: {}".format (err))
+        raise
+      except:
+        print ("Some exception occurred getting REP socket {}".format (sys.exc_info()[0]))
+        raise
 
-    try:
-      # as in a traditional socket, tell the system what port are we going to listen on
-      # Moreover, tell it which protocol we are going to use, and which network
-      # interface we are going to listen for incoming requests. This is TCP.
-      bind_string = "tcp://*:" + str (port)
-      print ("TCP server will be binding on {}".format (bind_string))
-      self.rep.bind (bind_string)
-    except zmq.ZMQError as err:
-      print ("ZeroMQ Error binding REP socket: {}".format (err))
-      self.rep.close ()
-      raise
-    except:
-      print ("Some exception occurred binding REP socket {}".format (sys.exc_info()[0]))
-      self.rep.close ()
-      raise
+      try:
+        # as in a traditional socket, tell the system what port are we going to listen on
+        # Moreover, tell it which protocol we are going to use, and which network
+        # interface we are going to listen for incoming requests. This is TCP.
+        bind_string = "tcp://*:" + str (port)
+        print ("TCP server will be binding on {}".format (bind_string))
+        self.rep.bind (bind_string)
+      except zmq.ZMQError as err:
+        print ("ZeroMQ Error binding REP socket: {}".format (err))
+        self.rep.close ()
+        raise
+      except:
+        print ("Some exception occurred binding REP socket {}".format (sys.exc_info()[0]))
+        self.rep.close ()
+        raise
+    else:
+      try:
+        # The socket concept in ZMQ is far more advanced than the traditional socket in
+        # networking. Each socket we obtain from the context object must be of a certain
+        # type. For TCP, we will use REQ for client side (many other pairs are supported
+        # in ZMQ for tcp.
+        print ("Obtain the REQ type socket")
+        self.req = context.socket (zmq.REQ)
+      except zmq.ZMQError as err:
+        print ("ZeroMQ Error obtaining REQ socket: {}".format (err))
+        raise
+      except:
+        print ("Some exception occurred getting REQ socket {}".format (sys.exc_info()[0]))
+        raise
 
-    try:
-      # The socket concept in ZMQ is far more advanced than the traditional socket in
-      # networking. Each socket we obtain from the context object must be of a certain
-      # type. For TCP, we will use REQ for client side (many other pairs are supported
-      # in ZMQ for tcp.
-      print ("Obtain the REQ type socket")
-      self.req = context.socket (zmq.REQ)
-    except zmq.ZMQError as err:
-      print ("ZeroMQ Error obtaining REQ socket: {}".format (err))
-      raise
-    except:
-      print ("Some exception occurred getting REQ socket {}".format (sys.exc_info()[0]))
-      raise
-
-    try:
-      # as in a traditional socket, tell the system where we are going to connect
-      # to.  In this code, we assume server is on localhost but port is configurable.
-      connect_string = "tcp://localhost:" + str (port)
-      print ("TCP client will be connecting to {}".format (connect_string))
-      self.req.connect (connect_string)
-    except zmq.ZMQError as err:
-      print ("ZeroMQ Error connecting REQ socket: {}".format (err))
-      self.rep.close ()
-      raise
-    except:
-      print ("Some exception occurred connecting REQ socket {}".format (sys.exc_info()[0]))
-      self.rep.close ()
-      raise
+      try:
+        # as in a traditional socket, tell the system where we are going to connect
+        # to.  In this code, we assume server is on localhost but port is configurable.
+        connect_string = "tcp://localhost:" + str (port)
+        print ("TCP client will be connecting to {}".format (connect_string))
+        self.req.connect (connect_string)
+      except zmq.ZMQError as err:
+        print ("ZeroMQ Error connecting REQ socket: {}".format (err))
+        self.rep.close ()
+        raise
+      except:
+        print ("Some exception occurred connecting REQ socket {}".format (sys.exc_info()[0]))
+        self.rep.close ()
+        raise
 
   # clean up
-  def cleanup (self):
+  def cleanup (self, type):
     # cleanup the sockets
-    self.req.close ()
-    self.rep.close ()
+    if type == "client":
+      self.req.close ()
+    else:
+      self.rep.close ()
 
   # Use the ZMQ's send_serialized method to send the custom message
   def send_request (self, cm):
@@ -194,55 +208,106 @@ class Peer ():
 #        Driver program
 ##################################
 
-def driver (name, iters, vec_len, port):
+def driver (iters, port, type):
 
-  print ("Driver program: Name = {}, Num Iters = {}, Vector len = {}, Peer port = {}".format (name, iters, vec_len, port))
+  print ("Num Iters = {}, Peer port = {}, Type = {}".format (iters, port, type))
 
   # first obtain a peer and initialize it
   print ("Driver program: create and configure a peer object")
   peer = Peer ()
   try:
-    peer.configure (port)
+    peer.configure (port, type)
   except:
     print ("Some exception occurred")
     return
-  
-  # now send the serialized custom message for the number of desired iterations
-  cm = CustomMessage ()   # create this once and reuse it for send/receive
+  cm = CustomOrder()
+  if type == "client":
+    # now send the serialized custom message for the number of desired iterations
 
-  for i in range (iters):
-        
-    # for every iteration, let us fill up our custom message with some info
-    cm.seq_num = i # this will be our sequence number
-    cm.ts = time.time ()  # current time
-    cm.name = name # assigned name
-    cm.vec = [random.randint (1, 1000) for j in range (vec_len)]
-    print ("-----Iteration: {} contents of message before serializing ----------".format (i))
-    cm.dump ()
+    for i in range (iters):
+      veggies = VEGGIES()
+      veggies.tomato = 1.0
+      veggies.jalapeno = 1.0
+      veggies.onion = 2.0
+      
+      drinks = DRINKS()
+      bottles = BOTTLES()
+      bottles.sprite = 2
+      cans = CANS()
+      cans.bud_light = 1
+      drinks.bottle = bottles
+      drinks.can = cans
 
-    # Recall that we are a peer running on the same machine, and because
-    # we are using the REQ-REP pattern, there has to be a response
-    # from server to client side. Here we send a dummy ACK which does not
-    # need any serialization.
-    try:
-      # now let the peer send the message to its server part
-      print ("Peer client sending the serialized message")
-      start_time = time.time ()
-      peer.send_request (cm)
-      end_time = time.time ()
-      print ("Serialization took {} secs".format (end_time-start_time))
-    except:
-      return
+      milk_ele1 = MILK()
+      milk_ele1.milk_type = MILK_TYPE.almond
+      milk_ele1.milk_quantity = 1.2
 
+      milk_ele2 = MILK()
+      milk_ele2.milk_type = MILK_TYPE.cashew
+      milk_ele2.milk_quantity = 2.0
+      
+      milk_array = [milk_ele1, milk_ele2]
+
+      bread_ele1 = BREAD()
+      bread_ele1.bread_type = BREAD_TYPE.pumpernickel
+      bread_ele1.bread_quantity = 2.0
+
+      bread_ele2 = BREAD()
+      bread_ele2.bread_type = BREAD_TYPE.rye
+      bread_ele2.bread_quantity = 1.0
+      
+      bread_array = [bread_ele1, bread_ele2]
+
+      meat_ele1 = MEAT()
+      meat_ele1.meat_type = MEAT_TYPE.beef
+      meat_ele1.meat_quantity = 2.4
+      
+      meat_array = [meat_ele1]
+
+      order_content = Content
+      order_content.veggies = veggies
+      order_content.drinks = drinks
+      order_content.milk = milk_array
+      order_content.bread = bread_array
+      order_content.meat = meat_array
+
+      cm.content = order_content
+      print ("-----Iteration: {} contents of message before serializing ----------".format (i))
+      cm.dump_serialize()
+
+      # Recall that we are a peer running on the same machine, and because 
+      # we are using the REQ-REP pattern, there has to be a response
+      # from server to client side. Here we send a dummy ACK which does not
+      # need any serialization.
+      try:
+        # now let the peer send the message to its server part
+        print ("Peer client sending the serialized message")
+        start_time = time.time ()
+        peer.send_request (cm)
+        end_time = time.time ()
+        print ("Serialization took {} secs and sending to ".format (end_time-start_time))
+      except:
+        return
+      
+      ## try:
+        # now let the peer receive the ack
+      #  print ("Peer client receiving the ACK")
+      #  peer.recv_ack ()
+      #except:
+      #  return
+      ###
+      time.sleep (0.050)  # 50 msec
+      peer.cleanup (type)
+  else:
     try:
       # now let the peer receive the message at the server end
-      print ("Peer client sending the serialized message")
+      print ("Server receiving the serialized message")
       start_time = time.time ()
       cm = peer.recv_request ()
       end_time = time.time ()
       print ("Deserialization took {} secs".format (end_time-start_time))
       print ("------ contents of message after deserializing ----------")
-      cm.dump ()
+      cm.dump_deserialize()
     except:
       return
 
@@ -253,19 +318,12 @@ def driver (name, iters, vec_len, port):
     except:
       return
 
-    try:
-      # now let the peer receive the ack
-      print ("Peer client receiving the ACK")
-      peer.recv_ack ()
-    except:
-      return
-
     # sleep a while before we send the next serialization so it is not
     # extremely fast
     time.sleep (0.050)  # 50 msec
 
   # we are done. Just cleanup the peer before exiting
-  peer.cleanup ()
+  #peer.cleanup ()
   
 ##################################
 # Command line parsing
@@ -276,9 +334,9 @@ def parseCmdLineArgs ():
 
     # add optional arguments
     parser.add_argument ("-i", "--iters", type=int, default=10, help="Number of iterations to run (default: 10)")
-    parser.add_argument ("-l", "--veclen", type=int, default=20, help="Length of the vector field (default: 20; contents are irrelevant)")
-    parser.add_argument ("-n", "--name", default="FlatBuffer ZMQ Demo", help="Name to include in each message")
     parser.add_argument ("-p", "--port", type=int, default=5555, help="Port where the server part of the peer listens and client side connects to (default: 5555)")
+    parser.add_argument ("-t", "--type", default="server", help="Provide type. server or client")
+
     # parse the args
     args = parser.parse_args ()
 
@@ -295,7 +353,7 @@ def main ():
   parsed_args = parseCmdLineArgs ()
     
   # start the driver code
-  driver (parsed_args.name, parsed_args.iters, parsed_args.veclen, parsed_args.port)
+  driver (parsed_args.iters, parsed_args.port, parsed_args.type)
 
 #----------------------------------------------
 if __name__ == '__main__':
