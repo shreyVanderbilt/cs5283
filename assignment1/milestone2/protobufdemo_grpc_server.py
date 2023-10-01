@@ -34,7 +34,7 @@ import schema_pb2_grpc as spb_grpc
 ##################################
 #  The Service implementation class
 ##################################
-class ServiceHandler (spb_grpc.DummyServiceServicer):
+class ServiceHandler (spb_grpc.OrderServiceServicer):
   
   # Implement the method message that gets called on us via an upcall
   # Note, we have to use the same name for the method because it must be an
@@ -43,7 +43,7 @@ class ServiceHandler (spb_grpc.DummyServiceServicer):
     """ Handle request message """
     try:
       # here, let us just print what we got.
-      print ("Received request - seq no: {}, timestamp: {}, name: {}, data: {}".format (request.seq_no, request.ts, request.name, request.data))
+      print ("Received request - Content: {}".format (request.content))
 
       # Now send response
       resp = spb.Response ()  # allocate the response object. Note it is empty
@@ -75,7 +75,7 @@ def driver (port):
 
     # Make the binding between the stub and the handler
     print ("Make the connection between our handler class and server")
-    spb_grpc.add_DummyServiceServicer_to_server(handler, server)
+    spb_grpc.add_OrderServiceServicer_to_server(handler, server)
 
     print ("Add port to our server")
     server.add_insecure_port("[::]:" + str (port))

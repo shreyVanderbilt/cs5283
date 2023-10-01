@@ -33,9 +33,9 @@ import schema_pb2_grpc as spb_grpc
 #        Driver program
 ##################################
 
-def driver (name, iters, vec_len, port):
+def driver (iters, port, address):
 
-  print ("Driver program: Name = {}, Num Iters = {}, Vector len = {}, Peer port = {}".format (name, iters, vec_len, port))
+  print ("Driver program: Num Iters = {}, Port = {}, Address = {}".format (iters, port, address))
 
   # first obtain a peer and initialize it
   print ("Driver program: create handle to the client and then run the code")
@@ -43,21 +43,57 @@ def driver (name, iters, vec_len, port):
 
     # Use the insecure channel to establish connection with server
     print ("Instantiate insecure channel")
-    channel = grpc.insecure_channel ("localhost:" + str (port))
+    channel = grpc.insecure_channel (str(address) + ":" + str (port))
 
     print ("Obtain a proxy object to the server")
-    stub = spb_grpc.DummyServiceStub (channel)
+    stub = spb_grpc.OrderServiceStub(channel)
 
     # now send the serialized custom message for the number of desired iterations
     print ("Allocate the Request object that we will then populate in every iteration")
-    req = spb.Request ()
+    req = spb.Order()
 
     for i in range (iters):
       # for every iteration, let us fill up our custom message with some info
-      req.seq_no = i # this will be our sequence number
-      req.ts = time.time ()  # current time
-      req.name = name # assigned name
-      req.data[:] = [random.randint (1, 1000) for j in range (vec_len)]
+      veggies = spb.Veggies()
+      veggies.tomato = 1.0
+      veggies.jalapeno = 1.0
+      veggies.onion = 1.0
+
+      drinks = spb.Drinks()
+      cans = spb.Cans()
+      bottles = spb.Bottles()
+
+      cans.bud_light = 1
+      bottles.sprite = 1
+      drinks.bottles.ParseFromString(bottles.SerializeToString())
+      drinks.cans.ParseFromString(cans.SerializeToString())
+
+      bread1 = spb.Bread()
+      bread1.bread_type = spb.Bread_Type.rye
+      bread1.quantity = 1
+
+      bread2 = spb.Bread()
+      bread2.bread_type = spb.Bread_Type.whole_wheat
+      bread2.quantity = 2
+
+      meat1 = spb.Meat()
+      meat1.meat_Type = spb.Meat_Type.beef
+      meat1.quantity = 1
+
+      milk1 = spb.Milk()
+      milk1.milk_type = spb.Milk_Type.almond
+      milk1.quantity = 1
+
+      content = spb.Content()
+      content.veggies.ParseFromString(veggies.SerializeToString())
+      content.drinks.ParseFromString(drinks.SerializeToString())
+      content.milk.append(milk1)
+      content.bread.append(bread1)
+      content.bread.append(bread2)
+      content.meat.append(meat1)
+
+      req.content.ParseFromString(content.SerializeToString())
+
       print ("-----Iteration: {} contents of message before sending\n{} ----------".format (i, req))
 
       # now let the client send the message to its server part
@@ -84,10 +120,9 @@ def parseCmdLineArgs ():
 
     # add optional arguments
     parser.add_argument ("-i", "--iters", type=int, default=10, help="Number of iterations to run (default: 10)")
-    parser.add_argument ("-l", "--veclen", type=int, default=20, help="Length of the vector field (default: 20; contents are irrelevant)")
-    parser.add_argument ("-n", "--name", default="ProtoBuf gRPC Demo", help="Name to include in each message")
     parser.add_argument ("-p", "--port", type=int, default=5577, help="Port where the server part of the peer listens and client side connects to (default: 5577)")
-    
+    parser.add_argument ("-a", "--address", default="localhost", help="IP address")
+
     # parse the args
     args = parser.parse_args ()
 
@@ -104,7 +139,7 @@ def main ():
   parsed_args = parseCmdLineArgs ()
     
   # start the driver code
-  driver (parsed_args.name, parsed_args.iters, parsed_args.veclen, parsed_args.port)
+  driver (parsed_args.iters, parsed_args.port, parsed_args.address)
 
 #----------------------------------------------
 if __name__ == '__main__':
