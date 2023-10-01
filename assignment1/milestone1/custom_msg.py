@@ -123,7 +123,7 @@ class CustomOrder:
   
   def dump (self):
     print ("Dumping contents of Custom Order")
-    print ("  Content: {}".format (self.content.veggies.tomato))
+    print ("  Content: {}".format (self.content.milk[0].milk_type))
 
 
 
