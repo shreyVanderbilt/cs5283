@@ -47,6 +47,8 @@ class ServiceHandler (spb_grpc.OrderServiceServicer):
 
       # Now send response
       resp = spb.Response ()  # allocate the response object. Note it is empty
+      resp.code = spb.Code.OK
+      resp.data = "Order Placed"
       return resp   # note that this is what is supposed to be returned
     except:
       print ("Some exception occurred handling method {}".format (sys.exc_info()[0]))

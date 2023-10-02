@@ -103,6 +103,8 @@ def driver (iters, port, address):
       end_time = time.time ()
       print ("sending/receiving took {} secs".format (end_time-start_time))
 
+      print (" Response recieved: ", resp)
+
       # sleep a while before we send the next serialization so it is not
       # extremely fast
       time.sleep (0.050)  # 50 msec
