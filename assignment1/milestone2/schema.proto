@@ -85,6 +85,29 @@ enum Code {
     OK = 1;
 }
 
+message Health {
+    Health_Content healthContent = 1;
+}
+
+enum Dispenser {
+    optimal = 0;
+    partial = 1;
+    blockage = 2;
+}
+
+enum Status {
+    good = 0;
+    bad = 1;
+}
+
+message Health_Content {
+    Dispenser dispenser = 1;
+    int32 icemaker = 2;
+    Status lightbulb = 3; 
+    int32 fridge_temp = 4;
+    int32 freeze_temp = 5;
+    Status sensor_status = 6;
+}
 
 message Response {
     Code code = 1;
@@ -94,4 +117,9 @@ message Response {
 service OrderService
 {
     rpc method (Order) returns (Response) {};
+}
+
+service HealthService
+{
+    rpc method (Health) returns (Response) {};
 }

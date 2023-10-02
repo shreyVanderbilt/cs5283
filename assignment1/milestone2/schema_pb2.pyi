@@ -34,6 +34,17 @@ class Code(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []
     BAD_REQUEST: _ClassVar[Code]
     OK: _ClassVar[Code]
+
+class Dispenser(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    optimal: _ClassVar[Dispenser]
+    partial: _ClassVar[Dispenser]
+    blockage: _ClassVar[Dispenser]
+
+class Status(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = []
+    good: _ClassVar[Status]
+    bad: _ClassVar[Status]
 whole: Milk_Type
 _1: Milk_Type
 _2: Milk_Type
@@ -51,6 +62,11 @@ turkey: Meat_Type
 ham: Meat_Type
 BAD_REQUEST: Code
 OK: Code
+optimal: Dispenser
+partial: Dispenser
+blockage: Dispenser
+good: Status
+bad: Status
 
 class Order(_message.Message):
     __slots__ = ["content"]
@@ -141,6 +157,28 @@ class Bread(_message.Message):
     bread_type: Bread_Type
     quantity: int
     def __init__(self, bread_type: _Optional[_Union[Bread_Type, str]] = ..., quantity: _Optional[int] = ...) -> None: ...
+
+class Health(_message.Message):
+    __slots__ = ["healthContent"]
+    HEALTHCONTENT_FIELD_NUMBER: _ClassVar[int]
+    healthContent: Health_Content
+    def __init__(self, healthContent: _Optional[_Union[Health_Content, _Mapping]] = ...) -> None: ...
+
+class Health_Content(_message.Message):
+    __slots__ = ["dispenser", "icemaker", "lightbulb", "fridge_temp", "freeze_temp", "sensor_status"]
+    DISPENSER_FIELD_NUMBER: _ClassVar[int]
+    ICEMAKER_FIELD_NUMBER: _ClassVar[int]
+    LIGHTBULB_FIELD_NUMBER: _ClassVar[int]
+    FRIDGE_TEMP_FIELD_NUMBER: _ClassVar[int]
+    FREEZE_TEMP_FIELD_NUMBER: _ClassVar[int]
+    SENSOR_STATUS_FIELD_NUMBER: _ClassVar[int]
+    dispenser: Dispenser
+    icemaker: int
+    lightbulb: Status
+    fridge_temp: int
+    freeze_temp: int
+    sensor_status: Status
+    def __init__(self, dispenser: _Optional[_Union[Dispenser, str]] = ..., icemaker: _Optional[int] = ..., lightbulb: _Optional[_Union[Status, str]] = ..., fridge_temp: _Optional[int] = ..., freeze_temp: _Optional[int] = ..., sensor_status: _Optional[_Union[Status, str]] = ...) -> None: ...
 
 class Response(_message.Message):
     __slots__ = ["code", "data"]

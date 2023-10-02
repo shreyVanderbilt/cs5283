@@ -54,6 +54,26 @@ class ServiceHandler (spb_grpc.OrderServiceServicer):
       print ("Some exception occurred handling method {}".format (sys.exc_info()[0]))
       raise
 
+class ServiceHandler2 (spb_grpc.HealthServiceServicer):
+  
+  # Implement the method message that gets called on us via an upcall
+  # Note, we have to use the same name for the method because it must be an
+  # overridden method
+  def method (self, request, context):
+    """ Handle request message """
+    try:
+      # here, let us just print what we got.
+      print ("Received request - Content: {}".format (request.healthContent))
+
+      # Now send response
+      resp = spb.Response ()  # allocate the response object. Note it is empty
+      resp.code = spb.Code.OK
+      resp.data = "You are Health"
+      return resp   # note that this is what is supposed to be returned
+    except:
+      print ("Some exception occurred handling method {}".format (sys.exc_info()[0]))
+      raise
+
 ##################################
 #        Driver program
 ##################################
@@ -74,10 +94,12 @@ def driver (port):
     # Now create our message handler object
     print ("Instantiate our service handler")
     handler = ServiceHandler ()
+    handler2 = ServiceHandler2 ()
 
     # Make the binding between the stub and the handler
     print ("Make the connection between our handler class and server")
     spb_grpc.add_OrderServiceServicer_to_server(handler, server)
+    spb_grpc.add_HealthServiceServicer_to_server(handler2, server)
 
     print ("Add port to our server")
     server.add_insecure_port("[::]:" + str (port))
