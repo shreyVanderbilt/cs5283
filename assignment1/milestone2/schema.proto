@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+message Order
+{
+   Content content = 1;
+}
+
+message Content
+{
+    Veggies veggies = 1;
+    Drinks drinks = 2;
+	repeated Milk milk = 3;
+	repeated Bread bread = 4;
+	repeated Meat meat = 5;
+}
+
+message Veggies {
+	optional float tomato = 1;
+    optional float cucumber = 2;
+    optional float pickle = 3;
+    optional float jalapeno = 4;
+    optional float mushroom = 5;
+    optional float onion = 6;
+}
+
+message Drinks {
+	Cans cans = 1;
+    Bottles bottles = 2;
+}
+
+message Cans {
+    optional int32 coke = 1;
+    optional int32 bud_light = 2;
+    optional int32 miller_lite = 3;
+}
+
+message Bottles {
+    optional int32 sprite = 1;
+    optional int32 fanta = 2;
+    optional int32 pepsi = 3;
+    optional int32 mtn_dew = 4;
+}
+
+enum Milk_Type {
+    whole = 0;
+    _1 = 1;
+    _2 = 2;
+    fat_free = 3;
+    almond = 4;
+    cashew = 5;
+    oat = 6;
+}
+
+enum Bread_Type{
+    whole_wheat = 0;
+    pumpernickel = 1;
+    rye = 2;
+    gluten_free = 3;
+}
+
+enum Meat_Type {
+    chicken = 0;
+    beef = 1;
+    turkey = 2;
+    ham = 3;
+}
+
+message Milk {
+    Milk_Type milk_type = 1;
+    int32 quantity = 2;
+}
+
+message Meat {
+    Meat_Type meat_Type = 1;
+    int32 quantity = 2;
+}
+
+message Bread {
+    Bread_Type bread_type = 1;
+    int32 quantity = 2;
+}
+
+enum Code {
+    BAD_REQUEST = 0;
+    OK = 1;
+}
+
+message Health {
+    Health_Content healthContent = 1;
+}
+
+enum Dispenser {
+    optimal = 0;
+    partial = 1;
+    blockage = 2;
+}
+
+enum Status {
+    good = 0;
+    bad = 1;
+}
+
+message Health_Content {
+    Dispenser dispenser = 1;
+    int32 icemaker = 2;
+    Status lightbulb = 3; 
+    int32 fridge_temp = 4;
+    int32 freeze_temp = 5;
+    Status sensor_status = 6;
+}
+
+message Response {
+    Code code = 1;
+    string data = 2;
+}
+
+service OrderService
+{
+    rpc method (Order) returns (Response) {};
+}
+
+service HealthService
+{
+    rpc method (Health) returns (Response) {};
+}
