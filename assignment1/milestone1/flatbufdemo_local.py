@@ -44,43 +44,94 @@ def driver (name, iters, vec_len):
   for i in range (iters):
 
     veggies = VEGGIES()
-    veggies.tomato = 1.0
-    veggies.jalapeno = 1.0
-    veggies.onion = 2.0
+    veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    veggies.onion = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    veggies.cucumber = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    veggies.pickle = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
     drinks = DRINKS()
+    
     bottles = BOTTLES()
-    bottles.sprite = 2
+    bottles.sprite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    bottles.fanta = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    bottles.pepsi = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    bottles.mtn_dew = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    
     cans = CANS()
-    cans.bud_light = 1
+    cans.coke = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    cans.bud_light = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    cans.miller_lite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    
     drinks.bottle = bottles
     drinks.can = cans
 
     milk_ele1 = MILK()
     milk_ele1.milk_type = MILK_TYPE.almond
-    milk_ele1.milk_quantity = 1.2
+    milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
     milk_ele2 = MILK()
     milk_ele2.milk_type = MILK_TYPE.cashew
-    milk_ele2.milk_quantity = 2.0
+    milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    milk_ele3 = MILK()
+    milk_ele3.milk_type = MILK_TYPE.oat
+    milk_ele3.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    milk_ele4 = MILK()
+    milk_ele4.milk_type = MILK_TYPE.fat_free
+    milk_ele4.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    milk_ele5 = MILK()
+    milk_ele5.milk_type = MILK_TYPE._2
+    milk_ele5.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    milk_ele6 = MILK()
+    milk_ele6.milk_type = MILK_TYPE._1
+    milk_ele6.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    milk_ele7 = MILK()
+    milk_ele7.milk_type = MILK_TYPE.whole
+    milk_ele7.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    milk_array = [milk_ele1, milk_ele2]
+    milk_array = [milk_ele1, milk_ele2, milk_ele3, milk_ele4, milk_ele5, milk_ele6, milk_ele7]
 
     bread_ele1 = BREAD()
     bread_ele1.bread_type = BREAD_TYPE.pumpernickel
-    bread_ele1.bread_quantity = 2.0
+    bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
     bread_ele2 = BREAD()
     bread_ele2.bread_type = BREAD_TYPE.rye
-    bread_ele2.bread_quantity = 1.0
+    bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    bread_ele3 = BREAD()
+    bread_ele3.bread_type = BREAD_TYPE.whole_wheat
+    bread_ele3.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    bread_ele4 = BREAD()
+    bread_ele4.bread_type = BREAD_TYPE.gluten_free
+    bread_ele4.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    bread_array = [bread_ele1, bread_ele2]
+    bread_array = [bread_ele1, bread_ele2, bread_ele3, bread_ele4]
 
     meat_ele1 = MEAT()
-    meat_ele1.meat_type = MEAT_TYPE.beef
-    meat_ele1.meat_quantity = 2.4
+    meat_ele1.meat_type = MEAT_TYPE.chicken
+    meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    meat_ele2 = MEAT()
+    meat_ele2.meat_type = MEAT_TYPE.beef
+    meat_ele2.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    meat_ele3 = MEAT()
+    meat_ele3.meat_type = MEAT_TYPE.turkey
+    meat_ele3.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+    meat_ele4 = MEAT()
+    meat_ele4.meat_type = MEAT_TYPE.ham
+    meat_ele4.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    meat_array = [meat_ele1]
+    meat_array = [meat_ele1,meat_ele2,meat_ele3,meat_ele4]
 
     order_content = Content
     order_content.veggies = veggies
