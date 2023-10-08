@@ -56,42 +56,95 @@ def driver (iters, port, address, type):
       for i in range (iters):
         # for every iteration, let us fill up our custom message with some info
         veggies = spb.Veggies()
-        veggies.tomato = 1.0
-        veggies.jalapeno = 1.0
-        veggies.onion = 1.0
+        veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.onion = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.cucumber = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.pickle = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
         drinks = spb.Drinks()
         cans = spb.Cans()
         bottles = spb.Bottles()
 
-        cans.bud_light = 1
-        bottles.sprite = 1
+        cans.coke = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        cans.bud_light = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        cans.miller_lite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        bottles.sprite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        bottles.fanta = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        bottles.pepsi = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        bottles.mtn_dew = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    
         drinks.bottles.ParseFromString(bottles.SerializeToString())
         drinks.cans.ParseFromString(cans.SerializeToString())
 
-        bread1 = spb.Bread()
-        bread1.bread_type = spb.Bread_Type.rye
-        bread1.quantity = 1
+        milk_ele1 = spb.Milk()
+        milk_ele1.milk_type = spb.Milk_Type.almond
+        milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
-        bread2 = spb.Bread()
-        bread2.bread_type = spb.Bread_Type.whole_wheat
-        bread2.quantity = 2
+        milk_ele2 = spb.Milk()
+        milk_ele2.milk_type = spb.Milk_Type.cashew
+        milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
-        meat1 = spb.Meat()
-        meat1.meat_Type = spb.Meat_Type.beef
-        meat1.quantity = 1
+        milk_ele3 = spb.Milk()
+        milk_ele3.milk_type = spb.Milk_Type.oat
+        milk_ele3.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
-        milk1 = spb.Milk()
-        milk1.milk_type = spb.Milk_Type.almond
-        milk1.quantity = 1
+        milk_ele4 = spb.Milk()
+        milk_ele4.milk_type = spb.Milk_Type.fat_free
+        milk_ele4.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        milk_ele5 = spb.Milk()
+        milk_ele5.milk_type = spb.Milk_Type._2
+        milk_ele5.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        milk_ele6 = spb.Milk()
+        milk_ele6.milk_type = spb.Milk_Type._1
+        milk_ele6.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        milk_ele7 = spb.Milk()
+        milk_ele7.milk_type = spb.Milk_Type.whole
+        milk_ele7.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        bread_ele1 = spb.Bread()
+        bread_ele1.bread_type = spb.Bread_Type.pumpernickel
+        bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        bread_ele2 = spb.Bread()
+        bread_ele2.bread_type = spb.Bread_Type.rye
+        bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        bread_ele3 = spb.Bread()
+        bread_ele3.bread_type = spb.Bread_Type.whole_wheat
+        bread_ele3.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        bread_ele4 = spb.Bread()
+        bread_ele4.bread_type = spb.Bread_Type.gluten_free
+        bread_ele4.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        meat_ele1 = spb.Meat()
+        meat_ele1.meat_type = spb.Meat_Type.chicken
+        meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        meat_ele2 = spb.Meat()
+        meat_ele2.meat_type = spb.Meat_Type.beef
+        meat_ele2.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        meat_ele3 = spb.Meat()
+        meat_ele3.meat_type = spb.Meat_Type.turkey
+        meat_ele3.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+
+        meat_ele4 = spb.Meat()
+        meat_ele4.meat_type = spb.Meat_Type.ham
+        meat_ele4.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
         content = spb.Content()
         content.veggies.ParseFromString(veggies.SerializeToString())
         content.drinks.ParseFromString(drinks.SerializeToString())
-        content.milk.append(milk1)
-        content.bread.append(bread1)
-        content.bread.append(bread2)
-        content.meat.append(meat1)
+        content.milk.extend([milk_ele1, milk_ele2, milk_ele3, milk_ele4, milk_ele5, milk_ele6, milk_ele7])
+        content.bread.extend([bread_ele1, bread_ele2, bread_ele3, bread_ele4])
+        content.meat.extend([meat_ele1,meat_ele2,meat_ele3,meat_ele4])
 
         req.content.ParseFromString(content.SerializeToString())
 
