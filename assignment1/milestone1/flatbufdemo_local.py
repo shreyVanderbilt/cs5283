@@ -42,7 +42,6 @@ def driver (name, iters, vec_len):
   cm = CustomOrder()
   # now publish our information for the number of desired iterations
   for i in range (iters):
-
     veggies = VEGGIES()
     veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
@@ -54,84 +53,44 @@ def driver (name, iters, vec_len):
     drinks = DRINKS()
     
     bottles = BOTTLES()
-    bottles.sprite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-    bottles.fanta = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-    bottles.pepsi = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-    bottles.mtn_dew = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    bottles.sprite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+    bottles.fanta = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+    bottles.pepsi = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+    bottles.mtn_dew = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
     
     cans = CANS()
-    cans.coke = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-    cans.bud_light = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-    cans.miller_lite = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+    cans.coke = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+    cans.bud_light = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+    cans.miller_lite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
     
     drinks.bottle = bottles
     drinks.can = cans
 
     milk_ele1 = MILK()
-    milk_ele1.milk_type = MILK_TYPE.almond
+    milk_ele1.milk_type = random.choice(list(MILK_TYPE))
     milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
     milk_ele2 = MILK()
-    milk_ele2.milk_type = MILK_TYPE.cashew
+    milk_ele2.milk_type = random.choice(list(MILK_TYPE))
     milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    milk_ele3 = MILK()
-    milk_ele3.milk_type = MILK_TYPE.oat
-    milk_ele3.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    milk_ele4 = MILK()
-    milk_ele4.milk_type = MILK_TYPE.fat_free
-    milk_ele4.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    milk_ele5 = MILK()
-    milk_ele5.milk_type = MILK_TYPE._2
-    milk_ele5.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    milk_ele6 = MILK()
-    milk_ele6.milk_type = MILK_TYPE._1
-    milk_ele6.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    milk_ele7 = MILK()
-    milk_ele7.milk_type = MILK_TYPE.whole
-    milk_ele7.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    milk_array = [milk_ele1, milk_ele2, milk_ele3, milk_ele4, milk_ele5, milk_ele6, milk_ele7]
+    milk_array = [milk_ele1, milk_ele2]
 
     bread_ele1 = BREAD()
-    bread_ele1.bread_type = BREAD_TYPE.pumpernickel
+    bread_ele1.bread_type = random.choice(list(BREAD_TYPE))
     bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
     bread_ele2 = BREAD()
-    bread_ele2.bread_type = BREAD_TYPE.rye
+    bread_ele2.bread_type = random.choice(list(BREAD_TYPE))
     bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    bread_ele3 = BREAD()
-    bread_ele3.bread_type = BREAD_TYPE.whole_wheat
-    bread_ele3.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    bread_ele4 = BREAD()
-    bread_ele4.bread_type = BREAD_TYPE.gluten_free
-    bread_ele4.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    bread_array = [bread_ele1, bread_ele2, bread_ele3, bread_ele4]
+    bread_array = [bread_ele1, bread_ele2]
 
     meat_ele1 = MEAT()
-    meat_ele1.meat_type = MEAT_TYPE.chicken
+    meat_ele1.meat_type = random.choice(list(MEAT_TYPE))
     meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    meat_ele2 = MEAT()
-    meat_ele2.meat_type = MEAT_TYPE.beef
-    meat_ele2.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    meat_ele3 = MEAT()
-    meat_ele3.meat_type = MEAT_TYPE.turkey
-    meat_ele3.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-
-    meat_ele4 = MEAT()
-    meat_ele4.meat_type = MEAT_TYPE.ham
-    meat_ele4.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
     
-    meat_array = [meat_ele1,meat_ele2,meat_ele3,meat_ele4]
+    meat_array = [meat_ele1]
 
     order_content = Content
     order_content.veggies = veggies
@@ -178,8 +137,8 @@ def parseCmdLineArgs ():
     parser = argparse.ArgumentParser ()
 
     # add optional arguments
-    parser.add_argument ("-i", "--iters", type=int, default=10, help="Number of iterations to run (default: 10)")
-    parser.add_argument ("-l", "--veclen", type=int, default=20, help="Length of the vector field (default: 20; contents are irrelevant)")
+    parser.add_argument ("-i", "--iters", type=int, default=1, help="Number of iterations to run (default: 10)")
+    parser.add_argument ("-l", "--veclen", type=int, default=1, help="Length of the vector field (default: 20; contents are irrelevant)")
     parser.add_argument ("-n", "--name", default="FlatBuffer Local Demo", help="Name to include in each message")
     # parse the args
     args = parser.parse_args ()
