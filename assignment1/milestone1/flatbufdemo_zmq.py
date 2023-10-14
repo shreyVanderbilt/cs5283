@@ -226,41 +226,52 @@ def driver (iters, port, type, address):
 
     for i in range (iters):
       veggies = VEGGIES()
-      veggies.tomato = 1.0
-      veggies.jalapeno = 1.0
-      veggies.onion = 2.0
+      veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+      veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+      veggies.onion = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+      veggies.cucumber = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+      veggies.pickle = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+      veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
       
       drinks = DRINKS()
+      
       bottles = BOTTLES()
-      bottles.sprite = 2
+      bottles.sprite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      bottles.fanta = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      bottles.pepsi = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      bottles.mtn_dew = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      
       cans = CANS()
-      cans.bud_light = 1
+      cans.coke = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      cans.bud_light = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      cans.miller_lite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+      
       drinks.bottle = bottles
       drinks.can = cans
 
       milk_ele1 = MILK()
-      milk_ele1.milk_type = MILK_TYPE.almond
-      milk_ele1.milk_quantity = 1.2
+      milk_ele1.milk_type = random.choice(list(MILK_TYPE))
+      milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
       milk_ele2 = MILK()
-      milk_ele2.milk_type = MILK_TYPE.cashew
-      milk_ele2.milk_quantity = 2.0
+      milk_ele2.milk_type = random.choice(list(MILK_TYPE))
+      milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
       
       milk_array = [milk_ele1, milk_ele2]
 
       bread_ele1 = BREAD()
-      bread_ele1.bread_type = BREAD_TYPE.pumpernickel
-      bread_ele1.bread_quantity = 2.0
+      bread_ele1.bread_type = random.choice(list(BREAD_TYPE))
+      bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
       bread_ele2 = BREAD()
-      bread_ele2.bread_type = BREAD_TYPE.rye
-      bread_ele2.bread_quantity = 1.0
+      bread_ele2.bread_type = random.choice(list(BREAD_TYPE))
+      bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
       
       bread_array = [bread_ele1, bread_ele2]
 
       meat_ele1 = MEAT()
-      meat_ele1.meat_type = MEAT_TYPE.beef
-      meat_ele1.meat_quantity = 2.4
+      meat_ele1.meat_type = random.choice(list(MEAT_TYPE))
+      meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
       
       meat_array = [meat_ele1]
 
