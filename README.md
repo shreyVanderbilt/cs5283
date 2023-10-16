@@ -5,7 +5,7 @@
 **Team Members**: 
 - Shrey Patel
 - Nelson Torres
-- Justin Summer
+- Justin Sumner
 
 ## Introduction
 
