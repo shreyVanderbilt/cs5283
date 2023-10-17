@@ -38,6 +38,12 @@ from custom_msg import MILK_TYPE
 from custom_msg import BREAD_TYPE
 from custom_msg import MEAT_TYPE
 from custom_msg import Content
+
+from custom_msg_health import CustomHealth
+from custom_msg_health import HealthContent
+from custom_msg_health import STATUS
+from custom_msg_health import DISPENSER
+
 import serialize_flatbuf as sz  # this is from the file serialize.py in the same directory
 
 ##################################
@@ -129,7 +135,7 @@ class Peer ():
       self.rep.close ()
 
   # Use the ZMQ's send_serialized method to send the custom message
-  def send_request (self, cm):
+  def send_request (self, cm, request):
     """ Send serialized request"""
     try:
       # ZMQ supports a send_serialized method which needs the custom message
@@ -140,7 +146,10 @@ class Peer ():
       # method called serialize_to_frames that simply returns a [] of the
       # serialized buffer. This works.
       print ("ZMQ sending custom message via ZMQ's send_serialized method")
-      self.req.send_serialized (cm, sz.serialize_to_frames)
+      if(request == "order"):
+        self.req.send_serialized (cm, sz.serialize_to_frames)
+      else:
+        self.req.send_serialized (cm, sz.serialize_to_health_frames)
       # So no need to do the following as an alternative that definitely works.
       #buf = sz.serialize (cm)
       #self.req.send (buf)
@@ -167,7 +176,7 @@ class Peer ():
       raise
 
   # Use the ZMQ's recv_serialized method to send the custom message
-  def recv_request (self):
+  def recv_request (self, request):
     """ receive serialized request"""
     try:
       # ZMQ supports a recv_serialized method which needs a deserialize method.
@@ -176,7 +185,11 @@ class Peer ():
       print ("ZMQ receiving serialized custom message")
       # Note, in the following, if copy=False, then what is received is
       # a list of frames and not bytes
-      cm = self.rep.recv_serialized (sz.deserialize_from_frames, copy=True)
+      if(request == "order"):
+        cm = self.rep.recv_serialized (sz.deserialize_from_frames, copy=True)
+      else:
+        cm = self.rep.recv_serialized (sz.deserialize_from_health_frames, copy=True)
+         
       #buf = self.rep.recv ()
       #cm = sz.deserialize (buf)
       return cm
@@ -208,9 +221,9 @@ class Peer ():
 #        Driver program
 ##################################
 
-def driver (iters, port, type, address):
+def driver (iters, port, type, address, request):
 
-  print ("Num Iters = {}, Peer port = {}, Type = {}".format (iters, port, type))
+  print ("Num Iters = {}, Peer port = {}, Type = {}, Request = {}".format (iters, port, type, request))
 
   # first obtain a peer and initialize it
   print ("Driver program: create and configure a peer object")
@@ -221,84 +234,109 @@ def driver (iters, port, type, address):
     print ("Some exception occurred")
     return
   cm = CustomOrder()
+  ch = CustomHealth()
   if type == "client":
     # now send the serialized custom message for the number of desired iterations
 
     for i in range (iters):
-      veggies = VEGGIES()
-      veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      veggies.onion = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      veggies.cucumber = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      veggies.pickle = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      
-      drinks = DRINKS()
-      
-      bottles = BOTTLES()
-      bottles.sprite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      bottles.fanta = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      bottles.pepsi = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      bottles.mtn_dew = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      
-      cans = CANS()
-      cans.coke = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      cans.bud_light = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      cans.miller_lite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
-      
-      drinks.bottle = bottles
-      drinks.can = cans
+      if(request == "order"):
+        veggies = VEGGIES()
+        veggies.tomato = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.onion = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.cucumber = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.pickle = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        veggies.jalapeno = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        
+        drinks = DRINKS()
+        
+        bottles = BOTTLES()
+        bottles.sprite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        bottles.fanta = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        bottles.pepsi = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        bottles.mtn_dew = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        
+        cans = CANS()
+        cans.coke = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        cans.bud_light = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        cans.miller_lite = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        
+        drinks.bottle = bottles
+        drinks.can = cans
 
-      milk_ele1 = MILK()
-      milk_ele1.milk_type = random.choice(list(MILK_TYPE))
-      milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        milk_ele1 = MILK()
+        milk_ele1.milk_type = random.choice(list(MILK_TYPE))
+        milk_ele1.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
-      milk_ele2 = MILK()
-      milk_ele2.milk_type = random.choice(list(MILK_TYPE))
-      milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      
-      milk_array = [milk_ele1, milk_ele2]
+        milk_ele2 = MILK()
+        milk_ele2.milk_type = random.choice(list(MILK_TYPE))
+        milk_ele2.milk_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        
+        milk_array = [milk_ele1, milk_ele2]
 
-      bread_ele1 = BREAD()
-      bread_ele1.bread_type = random.choice(list(BREAD_TYPE))
-      bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        bread_ele1 = BREAD()
+        bread_ele1.bread_type = random.choice(list(BREAD_TYPE))
+        bread_ele1.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
 
-      bread_ele2 = BREAD()
-      bread_ele2.bread_type = random.choice(list(BREAD_TYPE))
-      bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      
-      bread_array = [bread_ele1, bread_ele2]
+        bread_ele2 = BREAD()
+        bread_ele2.bread_type = random.choice(list(BREAD_TYPE))
+        bread_ele2.bread_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        
+        bread_array = [bread_ele1, bread_ele2]
 
-      meat_ele1 = MEAT()
-      meat_ele1.meat_type = random.choice(list(MEAT_TYPE))
-      meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
-      
-      meat_array = [meat_ele1]
+        meat_ele1 = MEAT()
+        meat_ele1.meat_type = random.choice(list(MEAT_TYPE))
+        meat_ele1.meat_quantity = float(random.randint(0, 10)) + random.randint(0, 9) / 10.0
+        
+        meat_array = [meat_ele1]
 
-      order_content = Content
-      order_content.veggies = veggies
-      order_content.drinks = drinks
-      order_content.milk = milk_array
-      order_content.bread = bread_array
-      order_content.meat = meat_array
+        order_content = Content()
+        order_content.veggies = veggies
+        order_content.drinks = drinks
+        order_content.milk = milk_array
+        order_content.bread = bread_array
+        order_content.meat = meat_array
 
-      cm.content = order_content
-      print ("-----Iteration: {} contents of message before serializing ----------".format (i))
-      cm.dump_serialize()
+        cm.content = order_content
+        print ("-----Iteration: {} contents of message before serializing ----------".format (i))
+        cm.dump_serialize()
+
+        try:
+          # now let the peer send the message to its server part
+          print ("Peer client sending the serialized message")
+          start_time = time.time ()
+          peer.send_request (cm, request)
+          end_time = time.time ()
+          print ("Serialization took {} secs and sending to ".format (end_time-start_time))
+        except:
+          return
+
+      else:
+        health_content = HealthContent()
+        health_content.dispenser = random.choice(list(DISPENSER))
+        health_content.sensor_status = random.choice(list(STATUS))
+        health_content.lightbulb = random.choice(list(STATUS))
+        health_content.icemaker = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        health_content.fridge_temp = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+        health_content.freeze_temp = int(random.randint(0, 10) + random.randint(0, 9) / 10.0)
+
+        ch.content = health_content
+        print ("-----Iteration: {} contents of message before serializing ----------".format (i))
+        ch.dump_serialize()
 
       # Recall that we are a peer running on the same machine, and because 
       # we are using the REQ-REP pattern, there has to be a response
       # from server to client side. Here we send a dummy ACK which does not
       # need any serialization.
-      try:
-        # now let the peer send the message to its server part
-        print ("Peer client sending the serialized message")
-        start_time = time.time ()
-        peer.send_request (cm)
-        end_time = time.time ()
-        print ("Serialization took {} secs and sending to ".format (end_time-start_time))
-      except:
-        return
+        try:
+          # now let the peer send the message to its server part
+          print ("Peer client sending the serialized message")
+          start_time = time.time ()
+          peer.send_request (ch, request)
+          end_time = time.time ()
+          print ("Serialization took {} secs and sending to ".format (end_time-start_time))
+        except:
+          return
       
       ## try:
         # now let the peer receive the ack
@@ -308,14 +346,13 @@ def driver (iters, port, type, address):
       #  return
       ###
       time.sleep (0.050)  # 50 msec
-      peer.cleanup (type)
   else:
     while(1):
       try:
         # now let the peer receive the message at the server end
         print ("Server receiving the serialized message")
         start_time = time.time ()
-        cm = peer.recv_request ()
+        cm = peer.recv_request (request)
         end_time = time.time ()
         print ("Deserialization took {} secs".format (end_time-start_time))
         print ("------ contents of message after deserializing ----------")
@@ -349,6 +386,7 @@ def parseCmdLineArgs ():
     parser.add_argument ("-p", "--port", type=int, default=5555, help="Port where the server part of the peer listens and client side connects to (default: 5555)")
     parser.add_argument ("-a", "--address", default="localhost", help="Server IP address")
     parser.add_argument ("-t", "--type", default="server", help="Provide type. server or client")
+    parser.add_argument ("-r", "--request", default="order", help="Provide request type. order or health")
 
     # parse the args
     args = parser.parse_args ()
@@ -366,7 +404,7 @@ def main ():
   parsed_args = parseCmdLineArgs ()
     
   # start the driver code
-  driver (parsed_args.iters, parsed_args.port, parsed_args.type, parsed_args.address)
+  driver (parsed_args.iters, parsed_args.port, parsed_args.type, parsed_args.address, parsed_args.request)
 
 #----------------------------------------------
 if __name__ == '__main__':
