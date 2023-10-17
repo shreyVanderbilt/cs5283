@@ -1,0 +1,47 @@
+---
+# CS4383/5383: Computer Networks
+# Author: Aniruddha Gokhale
+# Created: Fall 2023
+#
+#
+# Modified for CCS5283 Programming Assignement 1
+# Modified By: Justin Sumner
+# Modified Date: Oct. 13, 2023
+#
+#
+# This is a declarative approach to describe a Kubernetes based
+# deployment for a corresponding service.
+#
+# See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/ for more details.
+
+apiVersion: apps/v1  # as required by K8s
+kind: Deployment         # Our pod is of the deployment type (because it is a long running server)
+metadata:
+  namespace: protobuf-grpc-local-demo   # deploy in this namespace
+  name: protobuf-grpc-svr-deploy   # some name for this deployment
+  labels:
+    app: protobuf-grpc-svr-app  # use the same name here that we used in the service declaration as we we need these two to match
+spec:                     # This is the specification where we can even put the number of replicas
+  replicas: 1             # default is 1
+  selector:
+    matchLabels:
+      app: protobuf-grpc-svr-app     # we use same matching label
+  minReadySeconds: 5  # if anything crashes before 5 secs, the deployment is not
+                          # considered as ready and available. Default value is 0
+  template:               # Specified info needed to run the pod and what runs in the pod
+    metadata:
+      labels:
+        app: protobuf-grpc-svr-app        # some label to give to this pod (see the matching label above)
+    spec:                 # actual specification of the pod
+      hostname: protobuf-grpc-svr-host   # we ask for a special host name so it available to other frontends
+      containers:
+        - name: protobuf-grpc-svr-container   # container name. Not needed/
+          image: protobuf-local # Either from hub.docker (default) or some publicly accessible URL like your github repo or a private registry.  Here, it points to the image that I have in my repo
+          ports:            
+            - containerPort: 5577  # port on which the container listens on
+          imagePullPolicy: IfNotPresent   # The following forces the node to pull the image if not locally available.
+          # The following is the command line to run the protobuf-grpc command as a server
+          command: ["python3"]
+          args: ["protobufdemo_grpc_server.py"] # arguments
+      restartPolicy: Always # this is the default. Basically, if the pod fails, K8s will restart it.
+...

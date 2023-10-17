@@ -1,0 +1,39 @@
+---
+# CS4383/5383: Computer Networks
+# Author: Aniruddha Gokhale
+# Created: Fall 2023
+#
+#
+# Modified for CCS5283 Programming Assignement 1
+# Modified By: Justin Sumner
+# Modified Date: Oct. 13, 2023
+#
+#
+# This is a declarative approach to describe a Kubernetes based
+# service for one or more deployed (i.e., a group) of pods that
+# implement that service. Think of service-deployment as the
+# Bridge pattern
+#
+# See https://kubernetes.io/docs/concepts/services-networking/service/ for more details
+
+---
+apiVersion: v1   # as required by K8s
+kind: Service     # this is a service declaration pod.
+metadata:
+  # give some name. Naming convention uses the following rules:
+  # https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#rfc-1035-label-names
+  namespace: protobuf-grpc-local-demo   # deploy in this namespace
+  name:   protobuf-grpc-svr-svc # Because this is a service, K8s will change this to all caps attaching the IP addr and port of the corresponding deployment that clients can then use.
+spec:
+  # Service accessible inside the cloud; hence ClusterIP
+  type: ClusterIP  # No need to specify this as it is default. Other possibilities include NodePort etc
+  selector:
+    app: protobuf-local    # used to match the pod(s) that run the protobuf-grpc server deployment pod
+  ports:
+    - name: protobuf-grpc-port    # not needed, but I have added this as we could access port via such a name
+      protocol: TCP     # this is default (so not needed either)
+      port: 5577  # port to which external clients will make a request on
+      targetPort: 5577   # this is the port on which the pod/container is internally actually listening on, and so whenever a client request hits the port above, it will get forwarded to target port. If not specified, it is same as port.
+
+...
+

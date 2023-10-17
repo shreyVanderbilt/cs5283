@@ -1,0 +1,10 @@
+namespace ResponseAppProto;
+
+enum CODE_STATUS:byte { OK = 0, BAD_REQUEST = 1 }
+
+table RESPONSE{
+	code:CODE_STATUS;
+	contents:string;
+}
+
+root_type RESPONSE;
