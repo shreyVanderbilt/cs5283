@@ -310,24 +310,25 @@ def driver (iters, port, type, address):
       time.sleep (0.050)  # 50 msec
       peer.cleanup (type)
   else:
-    try:
-      # now let the peer receive the message at the server end
-      print ("Server receiving the serialized message")
-      start_time = time.time ()
-      cm = peer.recv_request ()
-      end_time = time.time ()
-      print ("Deserialization took {} secs".format (end_time-start_time))
-      print ("------ contents of message after deserializing ----------")
-      cm.dump_deserialize()
-    except:
-      return
+    while(1):
+      try:
+        # now let the peer receive the message at the server end
+        print ("Server receiving the serialized message")
+        start_time = time.time ()
+        cm = peer.recv_request ()
+        end_time = time.time ()
+        print ("Deserialization took {} secs".format (end_time-start_time))
+        print ("------ contents of message after deserializing ----------")
+        cm.dump_deserialize()
+      except:
+        return
 
-    try:
-      # now let the peer send the ACK
-      print ("Peer server sending ACK")
-      peer.send_ack ()
-    except:
-      return
+      try:
+        # now let the peer send the ACK
+        print ("Peer server sending ACK")
+        peer.send_ack ()
+      except:
+        return
 
     # sleep a while before we send the next serialization so it is not
     # extremely fast
