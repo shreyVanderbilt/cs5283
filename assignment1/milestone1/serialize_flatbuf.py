@@ -37,6 +37,12 @@ import OrderAppProto.MILK_TYPE as milk_type   # this is the generated code by th
 import OrderAppProto.ORDER as order   # this is the generated code by the flatc compiler
 import OrderAppProto.VEGGIES as veggies   # this is the generated code by the flatc compiler
 
+from custom_msg_health import CustomHealth  # our custom message in native format
+import HealthAppProto.CONTENT as healthContent
+import HealthAppProto.DISPENSER as dispenser
+import HealthAppProto.HEALTH as health
+import HealthAppProto.STATUS as status
+
 # This is the method we will invoke from our driver program
 # Note that if you have have multiple different message types, we could have
 # separate such serialize/deserialize methods, or a single method can check what
@@ -123,6 +129,41 @@ def serialize (cm):
     # return this serialized buffer to the caller
     return buf
 
+
+
+def serialize_health (cm):
+    # first obtain the builder object that is used to create an in-memory representation
+    # of the serialized object from the custom message
+
+
+    builder = flatbuffers.Builder (0);
+    
+    healthContent.Start(builder)
+    healthContent.AddIcemaker(builder, cm.content.icemaker)
+    healthContent.AddFreezeTemp(builder, cm.content.freeze_temp)
+    healthContent.AddFridgeTemp(builder, cm.content.fridge_temp)
+    healthContent.AddLightbulb(builder, cm.content.lightbulb.value)
+    healthContent.AddSensorStatus(builder, cm.content.sensor_status.value)
+    healthContent.AddDispenser(builder, cm.content.dispenser.value)
+
+    health_content = healthContent.End(builder)  # get the topic of all these fields
+
+    health.Start(builder)
+    health.AddContents(builder, health_content)
+    serialized_msg = health.End(builder)
+
+    # end the serialization process
+    builder.Finish (serialized_msg)
+
+    # get the serialized buffer
+    buf = builder.Output ()
+
+    print("here", buf)
+    # return this serialized buffer to the caller
+    return buf
+
+
+
 # serialize the custom message to iterable frame objects needed by zmq
 def serialize_to_frames (cm):
   """ serialize into an interable format """
@@ -131,6 +172,14 @@ def serialize_to_frames (cm):
   # to get an iterable out of the serialized buffer is to enclose it inside []
   print ("serialize custom message to iterable list")
   return [serialize (cm)]
+
+def serialize_to_health_frames (cm):
+  """ serialize into an interable format """
+  # We had to do it this way because the send_serialized method of zmq under the hood
+  # relies on send_multipart, which needs a list or sequence of frames. The easiest way
+  # to get an iterable out of the serialized buffer is to enclose it inside []
+  print ("serialize custom message to iterable list")
+  return [serialize_health (cm)] 
   
   
 # deserialize the incoming serialized structure into native data type
@@ -138,6 +187,16 @@ def deserialize (buf):
     cm = CustomOrder();
 
     packet = order.ORDER.GetRootAs(buf, 0)
+
+    # sequence number
+    cm.content = packet.Contents()
+
+    return cm
+
+def deserialize_health (buf):
+    cm = CustomHealth();
+
+    packet = health.HEALTH.GetRootAs(buf, 0)
 
     # sequence number
     cm.content = packet.Contents()
@@ -159,4 +218,18 @@ def deserialize_from_frames (recvd_seq):
   # assuming only one frame in the received sequence, we just send this deserialized
   # custom message
   return cm
-    
+
+def deserialize_from_health_frames (recvd_seq):
+  """ This is invoked on list of frames by zmq """
+
+  # For this sample code, since we send only one frame, hopefully what
+  # comes out is also a single frame. If not some additional complexity will
+  # need to be added.
+  assert (len (recvd_seq) == 1)
+  #print ("type of each elem of received seq is {}".format (type (recvd_seq[i])))
+  print ("received data over the wire = {}".format (recvd_seq[0]))
+  cm = deserialize_health(recvd_seq[0])
+
+  # assuming only one frame in the received sequence, we just send this deserialized
+  # custom message
+  return cm
