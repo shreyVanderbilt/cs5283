@@ -32,8 +32,8 @@ spec:
       containers:  # we are running one container inside this pod
       - name: protobuf-local-client-container
         image: protobuf-local:latest
-        command: ["tail"]   # let us run this client for many iterations
-        args: ["-f", "/dev/null"]
+        command: ["python3"]   # let us run this client for many iterations
+        args: ["protobufdemo_grpc_client.py --iters 2 --address 10.0.0.1 --type order"]
         imagePullPolicy: Never
       restartPolicy: Never  # do not restart if the pod crashes
   backoffLimit: 4  # indicates how many times to try creating
