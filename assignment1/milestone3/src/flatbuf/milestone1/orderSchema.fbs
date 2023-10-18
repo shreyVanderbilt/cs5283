@@ -1,0 +1,62 @@
+namespace OrderAppProto;
+
+table ORDER{
+	contents: CONTENT;
+}
+
+table CONTENT {
+	veggies:VEGGIES;
+	drinks:DRINKS;
+	milk:[MILK];
+	bread:[BREAD];
+	meat:[MEAT];
+}
+
+table VEGGIES {
+	tomato:float = 0.0;
+	cucumber:float = 0.0;
+	pickle:float = 0.0;
+	jalapeno:float = 0.0;
+	mushroom:float = 0.0;
+	onion:float = 0.0;
+}
+
+table DRINKS{
+	cans: CANS;
+	bottles: BOTTLES;
+}
+
+struct CANS{
+	coke:int = 0;
+	bud_light:int = 0;
+	miller_lite:int = 0;
+}
+
+struct BOTTLES{
+	sprite:int = 0;
+	fanta:int = 0;
+	pepsi:int = 0;
+	mtn_dew:int = 0;
+}
+
+enum MILK_TYPE:byte { whole = 0, _1 = 1, _2 = 2, fat_free = 3, almond = 4, cashew = 5, oat = 6 }
+enum BREAD_TYPE:byte { whole_wheat = 0, pumpernickel = 1, rye = 2, gluten_free = 3 }
+enum MEAT_TYPE:byte { chicken = 0, beef = 1, turkey = 2, ham = 3 }
+
+
+table MILK{
+	milk_type:MILK_TYPE = whole;
+	quantity:float = 0.0;
+}
+
+table BREAD{
+	bread_type:BREAD_TYPE = whole_wheat;
+	quantity:float = 0.0;
+}
+
+table MEAT{
+	meat_type:MEAT_TYPE = chicken;
+	quantity:float = 0.0;
+}
+
+root_type ORDER;

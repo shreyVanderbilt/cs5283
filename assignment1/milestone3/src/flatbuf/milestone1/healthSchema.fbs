@@ -1,0 +1,21 @@
+namespace HealthAppProto;
+
+
+table HEALTH{
+	contents: CONTENT;
+}
+
+enum STATUS:byte { GOOD = 0, BAD = 1 }
+
+enum DISPENSER:byte { optimal = 0, partial = 1, blockage = 2 }
+
+table CONTENT {
+	dispenser:DISPENSER = optimal;
+	icemaker:int = 0;
+	lightbulb:STATUS = GOOD;
+	fridge_temp:int = 32;
+	freeze_temp:int = 0;
+	sensor_status:STATUS = GOOD;
+}
+
+root_type HEALTH;
