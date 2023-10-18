@@ -24,16 +24,16 @@
 apiVersion: batch/v1  # this is what K8s requires us to use
 kind: Job  # this is a job type pod
 metadata:
-  namespace: protobuf-grpc-local  # deploy in this namespace
-  name: protobuf-grpc-client  # name of our job pod
+  namespace: flatbuf-zmq-local  # deploy in this namespace
+  name: flatbuf-zmq-client  # name of our job pod
 spec:
   template:
     spec:
       containers:  # we are running one container inside this pod
-      - name: protobuf-local-client-container
-        image: protobuf-local:latest
-        command: ["tail"]   # let us run this client for many iterations
-        args: ["-f", "/dev/null"]
+      - name: flatbuf-zmq-client-container
+        image: flatbuf-zmq-local:latest
+        command: ["python3"]   # let us run this client for many iterations
+        args: ["flatbufdemo_zmq.py -i 1 --type client --address 10.0.0.1 --iters 1"]
         imagePullPolicy: Never
       restartPolicy: Never  # do not restart if the pod crashes
   backoffLimit: 4  # indicates how many times to try creating
