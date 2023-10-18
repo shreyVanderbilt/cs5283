@@ -15,8 +15,8 @@ Please follow the instructions below to set up and test the project.
 
 ## Screenshots
 
-![Screenshot Description](URL_TO_SCREENSHOT1)
-![Screenshot Description](URL_TO_SCREENSHOT2)
+![ZMC & Flatbuffer Example](ZMQ.png)
+![GRPC & Protobuf Example](GRPC.png)
 
 ---
 
@@ -67,10 +67,9 @@ pip3 install zmq
             ```
     5. On h2 xterm
         1. Run the client
-            1. 
-            '''
+            ```
             python flatbufdemo_zmq.py -i 1 --type client  --address 10.0.0.1 --iters 1
-            '''
+            ```
         2. Replace `10.0.0.1`` with inet value from 4-1
         3. Change "--iters 1" to how many orders you want to seralize and deseralize
     6. Check xterm h1 for order deseralization
@@ -86,7 +85,7 @@ pip3 install zmq
             python protobufdemo_grpc_server.py
             ```
     2. Client (h2):
-        1. run the client
+        1. Run the client
             ```
             python protobufdemo_grpc_client.py --iters 2 --address 10.0.0.1 --type order
             ```
