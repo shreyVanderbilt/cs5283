@@ -31,8 +31,8 @@ kubectl apply -f kube-flannel.yml
 # make the master also behave as worker
 echo "Taint the master so it can serve as a worker"
 
-# NOTE: I don't know why, but this fails if the hostname has any capital letters. Please specify your hostname in all lowercase letters
-#kubectl taint nodes ${HOSTNAME} node-role.kubernetes.io/control-plane:NoSchedule-
-kubectl taint nodes cs5283-coursevm-jsumner node-role.kubernetes.io/control-plane:NoSchedule-
+# NOTE: I don't know why, but this fails if the hostname has any capital letters. Please specify your hostname in all lowercase letters if needed
+kubectl taint nodes ${HOSTNAME} node-role.kubernetes.io/control-plane:NoSchedule-
+#kubectl taint nodes cs5283-coursevm-jsumner node-role.kubernetes.io/control-plane:NoSchedule-
 
 
