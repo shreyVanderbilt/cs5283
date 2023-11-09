@@ -91,3 +91,6 @@ pip3 install zmq
             ```
         2. Set type to order or health depending on type of message you want sent
         3. Change address to inet value and iters to number of orders/health request
+
+6. **Help Setting Up**
+    We encountered an issue where XTerm fails to import the libraries in the host terminal, to counteract this explicitly use `python3` and `pip3` as the package managers when installing all dependencies and running all scripts.
