@@ -6,6 +6,7 @@ from mininet.cli import CLI
 from mininet.log import setLogLevel, info
 from mininet.link import TCLink
 from mininet.topo import SingleSwitchTopo
+from mininet.clean import cleanup
 
 class LinuxRouter(Node):
     "A Node with IP forwarding enabled."
@@ -62,4 +63,5 @@ def createTopology():
 
 if __name__ == '__main__':
     setLogLevel('info')
+    cleanup()
     createTopology()
