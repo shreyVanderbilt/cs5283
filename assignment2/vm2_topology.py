@@ -38,6 +38,15 @@ def createTopology():
     # Add controller
     c0 = net.addController('c0')
 
+    # Create routers S and T
+    rS = net.addHost('S', cls=LinuxRouter)
+    rT = net.addHost('T', cls=LinuxRouter)
+
+    # Create routers Q R and V
+    rQ = net.addHost('rQ', cls=LinuxRouter, ip='192.168.10.1/24')
+    rR = net.addHost('rR', cls=LinuxRouter, ip='172.12.0.1/16')
+    rV = net.addHost('rV', cls=LinuxRouter, ip='10.100.0.1/16')
+
     # Create and add LANs to the network
     lan_p_topo = SingleSwitchTopo(2)  # Two hosts in LAN P
     lan_u_topo = SingleSwitchTopo(2)  # Two hosts in LAN U
