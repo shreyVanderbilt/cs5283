@@ -55,3 +55,4 @@ From within Mininet, test the connectivity:
 
 If the pings are successful, connectivity has been established through the VxLAN.
 
+![image](https://github.com/shreyVanderbilt/cs5283/assets/52799586/3932d34a-981a-4d1c-bd82-c6affd9f36e0)
