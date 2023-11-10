@@ -39,13 +39,26 @@ def createTopology():
     c0 = net.addController('c0')
 
     # Create routers S and T
-    rS = net.addHost('S', cls=LinuxRouter)
-    rT = net.addHost('T', cls=LinuxRouter)
+    rS = net.addHost('rS', cls=LinuxRouter)
+    rT = net.addHost('rT', cls=LinuxRouter)
 
     # Create routers Q R and V
     rQ = net.addHost('rQ', cls=LinuxRouter, ip='192.168.10.1/24')
     rR = net.addHost('rR', cls=LinuxRouter, ip='172.12.0.1/16')
     rV = net.addHost('rV', cls=LinuxRouter, ip='10.100.0.1/16')
+
+    # Create routers P and U
+    rP = net.addHost('rP', cls=LinuxRouter, ip='172.16.3.1/24')
+    rU = net.addHost('rU', cls=LinuxRouter, ip='10.85.10.1/24')
+
+
+    # Create and add LANs to the network
+    lan_q_topo = SingleSwitchTopo(1)  # One host in LAN Q
+    lan_r_topo = SingleSwitchTopo(1)  # One host in LAN R
+    lan_v_topo = SingleSwitchTopo(1)  # One host in LAN V
+    lan_q = lan_q_topo.build()
+    lan_r = lan_r_topo.build()
+    lan_v = lan_v_topo.build()
 
     # Create and add LANs to the network
     lan_p_topo = SingleSwitchTopo(2)  # Two hosts in LAN P
@@ -53,19 +66,25 @@ def createTopology():
     lan_p = lan_p_topo.build()
     lan_u = lan_u_topo.build()
 
-    # Create routers
-    rP = net.addHost('rP', cls=LinuxRouter, ip='172.16.3.1/24')
-    rU = net.addHost('rU', cls=LinuxRouter, ip='10.85.10.1/24')
 
     # Connect the routers to the LANs
     # Use canonical switch names
-    sP = net.addSwitch('s1')
-    sU = net.addSwitch('s2')
-    net.addLink(sP, rP, intfName2='rP-eth1', params2={'ip': '172.16.3.1/24'})
-    net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
+    sQ = net.addSwitch('s1')
+    sR = net.addSwitch('s2')
+    sV = net.addSwitch('s3')
 
-    # Add a second interface to routers P and U for the second subnet
-    net.addLink(sP, rP, intfName2='rP-eth2', params2={'ip': '172.16.5.1/24'})
+    sP = net.addSwitch('s4')
+    sU = net.addSwitch('s5')
+
+
+    #Add links between routers and LANs
+    net.addLink(sQ, rQ, intfName2='rP-eth1', params2={'ip': '192.168.10.1/24'})
+    net.addLink(sR, rR, intfName2='rP-eth1', params2={'ip': '172.12.0.1/16'})
+    net.addLink(sV, rV, intfName2='rP-eth1', params2={'ip': '10.100.0.1/16'})
+
+    net.addLink(sP, rP, intfName2='rP-eth1', params2={'ip': '172.16.5.1/24'})
+    net.addLink(sP, rP, intfName2='rP-eth2', params2={'ip': '172.16.3.1/24'})
+    net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
     net.addLink(sU, rU, intfName2='rU-eth2', params2={'ip': '10.85.8.1/24'})
 
     # Start the network
