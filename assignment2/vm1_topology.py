@@ -15,7 +15,7 @@ def create_network():
     # Add three hosts
     h1 = net.addHost('h1', ip='10.0.0.1')
     h2 = net.addHost('h2', ip='10.0.0.2')
-    h3 = net.addHost('h3', ip='10.100.0.1')
+    h3 = net.addHost('h3', ip='100.100.0.1')
     
     # Add two switches
     s1 = net.addSwitch('s1')
