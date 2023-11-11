@@ -1,50 +1,44 @@
+#!/usr/bin/python
+
 from mininet.net import Mininet
-from mininet.node import RemoteController, OVSSwitch
+from mininet.node import Controller, OVSKernelSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel
-from mininet.topo import Topo
-
-class CustomTopo(Topo):
-    "Custom topology with two switches and two hosts per switch."
-
-    def build(self):
-        # First switch with two hosts
-        s1 = self.addSwitch('s1')
-        h1 = self.addHost('h1', ip='192.168.1.1/24')
-        h2 = self.addHost('h2', ip='192.168.1.2/24')
-        self.addLink(h1, s1)
-        self.addLink(h2, s1)
-
-        # Second switch with two hosts
-        s2 = self.addSwitch('s2')
-        h3 = self.addHost('h3', ip='192.168.2.1/24')
-        h4 = self.addHost('h4', ip='192.168.2.2/24')
-        self.addLink(h3, s2)
-        self.addLink(h4, s2)
-
-        # Connect the two switches
-        self.addLink(s1, s2)
 
 def create_network():
-    "Create the network and run the CLI."
-
-    # Use a remote controller like Ryu
-    net = Mininet(topo=CustomTopo(), controller=lambda name: RemoteController(name, ip='127.0.0.1'), switch=OVSSwitch)
+    # Create an instance of the network
+    net = Mininet(controller=Controller, switch=OVSKernelSwitch)
+    
+    # Add a controller
+    c0 = net.addController('c0')
+    
+    # Add two hosts
+    h1 = net.addHost('h1', ip='10.0.0.1')
+    h2 = net.addHost('h2', ip='10.0.0.2')
+    
+    # Add two switches
+    s1 = net.addSwitch('s1')
+    s2 = net.addSwitch('s2')
+    
+    # Create links between hosts and switches
+    net.addLink(h1, s1)
+    net.addLink(h2, s2)
+    
+    # Create a link between switches to allow communication between hosts
+    net.addLink(s1, s2)
+    
+    # Start the network
     net.start()
-
-    # Diagnostic: Dump flow tables of both switches
-    print("s1 Flow Table:")
-    print(net['s1'].cmd('ovs-ofctl dump-flows s1'))
-    print("s2 Flow Table:")
-    print(net['s2'].cmd('ovs-ofctl dump-flows s2'))
-
+    
     # Test network connectivity
-    print("*** Ping: testing ping reachability")
     net.pingAll()
-
-    CLI(net)  # Start the CLI
+    
+    # Drop the user in a CLI so they can try other commands
+    CLI(net)
+    
+    # Stop the network
     net.stop()
 
 if __name__ == '__main__':
-    setLogLevel('info')
+    setLogLevel('info')  # Set the log level to info to see more detailed output
     create_network()
