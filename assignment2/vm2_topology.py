@@ -86,14 +86,18 @@ def createTopology():
     net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
     net.addLink(sU, rU, intfName2='rU-eth2', params2={'ip': '10.85.8.1/24'})
 
-    # Add unidirectional link from sP to sQ (sP can send to sQ but not the other way around)
-    sP_to_sQ = net.addLink(sP, sQ)
-    sP_to_sQ.intf2.config(bw=10, delay='5ms', loss=2, max_queue_size=1000)
-    net.configLinkStatus(sP, sQ, 'down')  # This will effectively make the link unidirectional
+    # Connect hosts to LAN switches
+    hP = net.addHost('hP', ip='172.16.3.1/24', defaultRoute='via 172.16.3.1')
+    net.addLink(hP, sP)
+    hQ = net.addHost('hq', ip='192.168.10.1/24', defaultRoute='via 192.168.10.1')
+    net.addLink(hQ, sQ)
+    # ... add other hosts and connect them to LAN switches as needed
 
-    # Add bidirectional link between sR and sP
-    net.addLink(sR, sP, bw=10, delay='5ms', loss=2, max_queue_size=1000, use_htb=True)
-
+    # Connect routers to each other (simulating unidirectional links)
+    net.addLink(hP, hQ, cls=TCLink, bw=10, max_queue_size=1000, 
+                    tcparams1={'bw': 1000, 'delay': '5ms'},
+                    tcparams2={'bw': 1, 'delay': '5ms', 'loss': 100})
+    
     # Start the network
     net.start()
 
