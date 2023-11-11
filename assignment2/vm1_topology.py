@@ -5,6 +5,8 @@ from mininet.log import setLogLevel
 from mininet.topo import Topo
 
 class CustomTopo(Topo):
+    "Custom topology with two switches and two hosts per switch."
+
     def build(self):
         # First switch with two hosts
         s1 = self.addSwitch('s1')
@@ -24,19 +26,22 @@ class CustomTopo(Topo):
         self.addLink(s1, s2)
 
 def create_network():
-    # Initialize Mininet with the custom topology
-    net = Mininet(topo=CustomTopo(), controller=Controller, switch=OVSSwitch)
+    "Create the network and run the CLI."
 
-    # Start the network
+    net = Mininet(topo=CustomTopo(), controller=Controller, switch=OVSSwitch)
     net.start()
 
+    # Diagnostic: Dump flow tables of both switches
+    print("s1 Flow Table:")
+    print(net['s1'].cmd('ovs-ofctl dump-flows s1'))
+    print("s2 Flow Table:")
+    print(net['s2'].cmd('ovs-ofctl dump-flows s2'))
+
     # Test network connectivity
+    print("*** Ping: testing ping reachability")
     net.pingAll()
 
-    # Run the CLI
-    CLI(net)
-
-    # After the user exits the CLI, stop the network
+    CLI(net)  # Start the CLI
     net.stop()
 
 if __name__ == '__main__':
