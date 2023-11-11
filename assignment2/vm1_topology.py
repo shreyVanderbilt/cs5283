@@ -3,6 +3,7 @@ from mininet.net import Mininet
 from mininet.node import OVSSwitch, Controller
 from mininet.log import setLogLevel
 from mininet.cli import CLI
+from mininet.util import dumpNodeConnections
 
 class UniDirectionalTopo(Topo):
     def build(self):
