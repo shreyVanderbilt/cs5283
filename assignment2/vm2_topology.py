@@ -66,15 +66,13 @@ def createTopology():
     lan_p = lan_p_topo.build()
     lan_u = lan_u_topo.build()
 
-
-    # Connect the routers to the LANs
+    # Correct the switch names to be unique
     # Use canonical switch names
-    sQ = net.addSwitch('s1')
-    sR = net.addSwitch('s2')
-    sV = net.addSwitch('s3')
-
-    sP = net.addSwitch('s4')
-    sU = net.addSwitch('s5')
+    sQ = net.addSwitch('sQ', dpid='0000000000000001')
+    sR = net.addSwitch('sR', dpid='0000000000000002')
+    sV = net.addSwitch('sV', dpid='0000000000000003')
+    sP = net.addSwitch('sP', dpid='0000000000000004')
+    sU = net.addSwitch('sU', dpid='0000000000000005')
 
     #Add links between routers and LANs
     net.addLink(sQ, rQ, intfName2='rQ-eth1', params2={'ip': '192.168.10.1/24'})
@@ -85,18 +83,6 @@ def createTopology():
     net.addLink(sP, rP, intfName2='rP-eth2', params2={'ip': '172.16.3.1/24'})
     net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
     net.addLink(sU, rU, intfName2='rU-eth2', params2={'ip': '10.85.8.1/24'})
-
-    # Connect hosts to LAN switches
-    hP = net.addHost('hP', ip='172.16.3.1/24', defaultRoute='via 172.16.3.1')
-    net.addLink(hP, sP)
-    hQ = net.addHost('hq', ip='192.168.10.1/24', defaultRoute='via 192.168.10.1')
-    net.addLink(hQ, sQ)
-    # ... add other hosts and connect them to LAN switches as needed
-
-    # Connect routers to each other (simulating unidirectional links)
-    net.addLink(hP, hQ, cls=TCLink, bw=10, max_queue_size=1000, 
-                    tcparams1={'bw': 1000, 'delay': '5ms'},
-                    tcparams2={'bw': 1, 'delay': '5ms', 'loss': 100})
     
     # Start the network
     net.start()
