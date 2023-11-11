@@ -78,9 +78,9 @@ def createTopology():
 
 
     #Add links between routers and LANs
-    net.addLink(sQ, rQ, intfName2='rP-eth1', params2={'ip': '192.168.10.1/24'})
-    net.addLink(sR, rR, intfName2='rP-eth1', params2={'ip': '172.12.0.1/16'})
-    net.addLink(sV, rV, intfName2='rP-eth1', params2={'ip': '10.100.0.1/16'})
+    net.addLink(sQ, rQ, intfName2='rQ-eth1', params2={'ip': '192.168.10.1/24'})
+    net.addLink(sR, rR, intfName2='rR-eth1', params2={'ip': '172.12.0.1/16'})
+    net.addLink(sV, rV, intfName2='rV-eth1', params2={'ip': '10.100.0.1/16'})
 
     net.addLink(sP, rP, intfName2='rP-eth1', params2={'ip': '172.16.5.1/24'})
     net.addLink(sP, rP, intfName2='rP-eth2', params2={'ip': '172.16.3.1/24'})
