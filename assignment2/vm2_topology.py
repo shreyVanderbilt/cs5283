@@ -76,7 +76,6 @@ def createTopology():
     sP = net.addSwitch('s4')
     sU = net.addSwitch('s5')
 
-
     #Add links between routers and LANs
     net.addLink(sQ, rQ, intfName2='rQ-eth1', params2={'ip': '192.168.10.1/24'})
     net.addLink(sR, rR, intfName2='rR-eth1', params2={'ip': '172.12.0.1/16'})
@@ -87,41 +86,16 @@ def createTopology():
     net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
     net.addLink(sU, rU, intfName2='rU-eth2', params2={'ip': '10.85.8.1/24'})
 
-    # #Add bidirectional links between the routers
-    # net.addLink(rP,rQ)
-    # net.addLink(rP,rR)
-    # net.addLink(rQ,rV)
-    # net.addLink(rQ,rS)
-    # net.addLink(rR,rS)
-    # net.addLink(rR,rU)
-    # net.addLink(rS,rU)
-    # net.addLink(rS,rV)
-    # net.addLink(rT,rV)
-    # net.addLink(rU,rV)
-    
+    # Add unidirectional link from sP to sQ (sP can send to sQ but not the other way around)
+    sP_to_sQ = net.addLink(sP, sQ)
+    sP_to_sQ.intf2.config(bw=10, delay='5ms', loss=2, max_queue_size=1000)
+    net.configLinkStatus(sP, sQ, 'down')  # This will effectively make the link unidirectional
+
+    # Add bidirectional link between sR and sP
+    net.addLink(sR, sP, bw=10, delay='5ms', loss=2, max_queue_size=1000, use_htb=True)
+
     # Start the network
     net.start()
-
-    # Check and print out all interface names for debugging purposes
-    print("rQ interfaces:", rQ.intfNames())
-
-    # Assuming that rQ has two interfaces, and you want to configure the second one (index 1)
-    # If rQ only has one interface, this will cause the IndexError you've seen
-    if len(rQ.intfNames()) > 1:
-        rQ_interface_name = rQ.intfNames()[1]  # Correctly access the second interface
-        # Block all traffic coming from rQ to rP, making the link unidirectional from rP to rQ
-        rQ.cmd(f'tc qdisc add dev {rQ_interface_name} root handle 1: netem loss 100%')
-    else:
-        print("Error: rQ does not have multiple interfaces as expected.")
-
-    # Now configure unidirectional behavior
-    # This will get the names of the interface on rQ that connects to rP
-    # You should replace 'rQ-eth1' with the actual interface name that connects to rP
-    rQ_interface_name = rQ.intfNames()[1]  # This assumes rQ-eth1 is the interface connected to rP
-
-    # Block all traffic coming from rQ to rP, making the link unidirectional from rP to rQ
-    # Use the actual interface name obtained from the Mininet object
-    rQ.cmd(f'tc qdisc add dev {rQ_interface_name} root handle 1: netem loss 100%')
 
     # Configure routes on routers P and U for their second subnet
     rP.cmd('ip route add 172.16.5.0/24 dev rP-eth2')
