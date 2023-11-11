@@ -33,10 +33,14 @@ def setupNetwork():
     net = Mininet(topo=topo, switch=OVSSwitch, controller=Controller)
     net.start()
 
-    # Setup unidirectional flow from s1 to s2 by adding OpenFlow rules to drop packets from s2 to s1
-    s2 = net.get('s2')
-    s2.cmd('ovs-ofctl add-flow s2 priority=65535,ip,nw_src=192.168.2.0/24,nw_dst=192.168.1.0/24,actions=drop')
-    s2.cmd('ovs-ofctl add-flow s2 priority=0,actions=normal')
+    # Adding static routes to hosts on s1 for subnet on s2
+    net['h1'].cmd('route add -net 192.168.2.0 netmask 255.255.255.0 dev h1-eth0')
+    net['h2'].cmd('route add -net 192.168.2.0 netmask 255.255.255.0 dev h2-eth0')
+
+    # Adding static routes to hosts on s2 for subnet on s1
+    # This is only needed if you want bidirectional communication
+    # net['h3'].cmd('route add -net 192.168.1.0 netmask 255.255.255.0 dev h3-eth0')
+    # net['h4'].cmd('route add -net 192.168.1.0 netmask 255.255.255.0 dev h4-eth0')
 
     print("Dumping host connections")
     dumpNodeConnections(net.hosts)
