@@ -1,12 +1,12 @@
 from mininet.topo import Topo
 from mininet.net import Mininet
-from mininet.node import OVSSwitch, RemoteController
+from mininet.node import OVSSwitch, Controller, OVSKernelSwitch
 from mininet.link import TCLink
 
 class CustomTopology(Topo):
     def build(self):
-        s1 = self.addSwitch('s1', cls=OVSSwitch)
-        s2 = self.addSwitch('s2', cls=OVSSwitch)
+        s1 = self.addSwitch('s1')
+        s2 = self.addSwitch('s2')
         h1 = self.addHost('h1')
         h2 = self.addHost('h2')
         
@@ -16,7 +16,7 @@ class CustomTopology(Topo):
 
 def main():
     topo = CustomTopology()
-    net = Mininet(topo=topo, controller=RemoteController)
+    net = Mininet(topo=topo, controller=Controller, switch=OVSKernelSwitch)
 
     net.start()
 
