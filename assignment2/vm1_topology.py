@@ -12,9 +12,10 @@ def create_network():
     # Add a controller
     c0 = net.addController('c0')
     
-    # Add two hosts
+    # Add three hosts
     h1 = net.addHost('h1', ip='10.0.0.1')
     h2 = net.addHost('h2', ip='10.0.0.2')
+    h3 = net.addHost('h3', ip='10.0.0.3')  # New host
     
     # Add two switches
     s1 = net.addSwitch('s1')
@@ -23,6 +24,7 @@ def create_network():
     # Create links between hosts and switches
     net.addLink(h1, s1)
     net.addLink(h2, s2)
+    net.addLink(h3, s1)  # Link the new host h3 to switch s1
     
     # Create a link between switches to allow communication between hosts
     net.addLink(s1, s2)
@@ -30,6 +32,13 @@ def create_network():
     # Start the network
     net.start()
     
+    # Add flow to s1 allowing all traffic to s2
+    s1.cmd('ovs-ofctl add-flow s1 priority=65535,action=normal')
+
+    # Add flow to s2 dropping ICMP packets from s1 to hosts behind s2
+    s2.cmd('ovs-ofctl add-flow s2 priority=65535,icmp,nw_src=10.0.0.1,action=drop')
+    s2.cmd('ovs-ofctl add-flow s2 priority=65535,icmp,nw_src=10.0.0.3,action=drop')
+
     # Test network connectivity
     net.pingAll()
     
