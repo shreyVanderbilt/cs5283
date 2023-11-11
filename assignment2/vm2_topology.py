@@ -109,15 +109,20 @@ def createTopology():
     rU.cmd('tc qdisc add dev rU-eth3 root handle 1: prio')
     rU.cmd('tc qdisc add dev rU-eth3 parent 1:1 handle 10: netem loss 100')
 
-    # Get the interface names dynamically from the rP and rQ objects
-    rP_interface_name = rP.intf('rP-eth1').name
-    rQ_interface_name = rQ.intf('rQ-eth1').name
+    # # Get the interface names dynamically from the rP and rQ objects
+    # rP_interface_name = rP.intf('rP-eth1').name
+    # rQ_interface_name = rQ.intf('rQ-eth1').name
+
+    # Get the interface objects
+    rP_to_rQ_intf = rP.intfs[1]  # Assuming rP-eth1 is the interface connecting to rQ
+    rQ_to_rP_intf = rQ.intfs[1]  # Assuming rQ-eth1 is the interface connecting to rP
+
 
     # Now configure unidirectional behavior
     # Block all traffic leaving rQ towards rP, effectively making the link unidirectional
     # from rP to rQ. Use the actual interface name obtained from the Mininet object.
-    rQ.cmd(f'tc qdisc add dev {rQ_interface_name} root handle 1: prio')
-    rQ.cmd(f'tc qdisc add dev {rQ_interface_name} parent 1:1 handle 10: netem loss 100')
+    rQ.cmd(f'tc qdisc add dev {rQ_to_rP_intf} root handle 1: prio')
+    rQ.cmd(f'tc qdisc add dev {rQ_to_rP_intf} parent 1:1 handle 10: netem loss 100')
 
     # Configure routes on routers P and U for their second subnet
     rP.cmd('ip route add 172.16.5.0/24 dev rP-eth2')
