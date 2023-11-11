@@ -102,6 +102,18 @@ def createTopology():
     # Start the network
     net.start()
 
+    # Check and print out all interface names for debugging purposes
+    print("rQ interfaces:", rQ.intfNames())
+
+    # Assuming that rQ has two interfaces, and you want to configure the second one (index 1)
+    # If rQ only has one interface, this will cause the IndexError you've seen
+    if len(rQ.intfNames()) > 1:
+        rQ_interface_name = rQ.intfNames()[1]  # Correctly access the second interface
+        # Block all traffic coming from rQ to rP, making the link unidirectional from rP to rQ
+        rQ.cmd(f'tc qdisc add dev {rQ_interface_name} root handle 1: netem loss 100%')
+    else:
+        print("Error: rQ does not have multiple interfaces as expected.")
+
     # Now configure unidirectional behavior
     # This will get the names of the interface on rQ that connects to rP
     # You should replace 'rQ-eth1' with the actual interface name that connects to rP
