@@ -32,12 +32,11 @@ def create_network():
     # Start the network
     net.start()
     
-    # Add flow to s1 allowing all traffic to s2
-    s1.cmd('ovs-ofctl add-flow s1 priority=65535,action=output:2')  # Send to port 2 (s2)
+    # # Add flow to s1 allowing all traffic to s2
+    # s1.cmd('ovs-ofctl add-flow s1 priority=65535,action=output:2')  # Send to port 2 (s2)
 
-    # Add flow to s2 allowing all traffic from s1
-    s2.cmd('ovs-ofctl add-flow s2 priority=65535,action=output:1')  # Send to port 1 (s1)
-
+    # # Add flow to s2 allowing all traffic from s1
+    # s2.cmd('ovs-ofctl add-flow s2 priority=65535,action=output:1')  # Send to port 1 (s1)
 
     # # Add flow to s1 allowing all traffic to s2
     # s1.cmd('ovs-ofctl add-flow s1 priority=65535,action=normal')
