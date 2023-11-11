@@ -1,5 +1,5 @@
 from mininet.net import Mininet
-from mininet.node import Controller, OVSSwitch
+from mininet.node import RemoteController, OVSSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel
 from mininet.topo import Topo
@@ -28,7 +28,8 @@ class CustomTopo(Topo):
 def create_network():
     "Create the network and run the CLI."
 
-    net = Mininet(topo=CustomTopo(), controller=Controller, switch=OVSSwitch)
+    # Use a remote controller like Ryu
+    net = Mininet(topo=CustomTopo(), controller=lambda name: RemoteController(name, ip='127.0.0.1'), switch=OVSSwitch)
     net.start()
 
     # Diagnostic: Dump flow tables of both switches
