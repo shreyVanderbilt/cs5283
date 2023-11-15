@@ -28,6 +28,9 @@ def create_network():
     net.build()
     net.addController('c0')
 
+    print("*** Testing network connectivity")
+    net.pingAll()
+
     print("*** Running CLI")
     CLI(net)
 
