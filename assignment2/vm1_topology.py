@@ -1,42 +1,49 @@
 from mininet.net import Mininet
-from mininet.node import Controller, OVSKernelSwitch
+from mininet.node import Node
+from mininet.log import setLogLevel, info
 from mininet.cli import CLI
-from mininet.log import setLogLevel
-from mininet.link import Link
+from mininet.link import TCLink
 
-def create_network():
-    "Create a network with two switches and four hosts."
+def run():
+    "Create network and run simple performance test"
+    net = Mininet( link=TCLink )
+    
+    info( '*** Adding hosts\n' )
+    h1 = net.addHost( 'h1', ip='192.168.1.2/24', defaultRoute='via 192.168.1.1' )
+    h2 = net.addHost( 'h2', ip='192.168.2.2/24', defaultRoute='via 192.168.2.1' )
 
-    net = Mininet(controller=Controller, switch=OVSKernelSwitch)
+    info( '*** Adding routers\n' )
+    r1 = net.addHost( 'r1', ip='192.168.1.1/24' )
+    r2 = net.addHost( 'r2', ip='192.168.2.1/24' )
 
-    print("*** Creating nodes")
-    h1 = net.addHost('h1', ip='10.0.0.1/24')
-    h2 = net.addHost('h2', ip='10.0.0.2/24')
-    h3 = net.addHost('h3', ip='10.0.1.1/24')
-    h4 = net.addHost('h4', ip='10.0.1.2/24')
-    s1 = net.addSwitch('s1')
-    s2 = net.addSwitch('s2')
+    info( '*** Creating links\n' )
+    net.addLink( h1, r1 )
+    net.addLink( h2, r2 )
+    net.addLink( r1, r2 )
 
-    print("*** Creating links")
-    net.addLink(h1, s1)
-    net.addLink(h2, s1)
-    net.addLink(h3, s2)
-    net.addLink(h4, s2)
-    net.addLink(s1, s2)  # Link between switches
+    info( '*** Starting network\n')
+    net.start()
 
-    print("*** Starting network")
-    net.build()
-    net.addController('c0')
+    info( '*** Configuring hosts\n' )
+    r1.cmd( 'ifconfig r1-eth1 10.0.0.1/24' )
+    r2.cmd( 'ifconfig r2-eth1 10.0.0.2/24' )
 
-    print("*** Testing network connectivity")
-    net.pingAll()
+    info( '*** Enabling forwarding on routers\n' )
+    r1.cmd( 'echo 1 > /proc/sys/net/ipv4/ip_forward' )
+    r2.cmd( 'echo 1 > /proc/sys/net/ipv4/ip_forward' )
 
-    print("*** Running CLI")
-    CLI(net)
+    info( '*** Adding routes\n' )
+    h1.cmd( 'route add default gw 192.168.1.1' )
+    h2.cmd( 'route add default gw 192.168.2.1' )
+    r1.cmd( 'route add -net 192.168.2.0/24 gw 10.0.0.2' )
+    r2.cmd( 'route add -net 192.168.1.0/24 gw 10.0.0.1' )
 
-    print("*** Stopping network")
+    info( '*** Running CLI\n' )
+    CLI( net )
+
+    info( '*** Stopping network\n' )
     net.stop()
 
 if __name__ == '__main__':
-    setLogLevel('info')
-    create_network()
+    setLogLevel( 'info' )
+    run()
