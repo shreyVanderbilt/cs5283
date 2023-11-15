@@ -24,7 +24,7 @@ def run():
     info( '*** Starting network\n')
     net.start()
 
-    info( '*** Configuring hosts\n' )
+    info( '*** Configuring routers\n' )
     r1.cmd( 'ifconfig r1-eth1 10.0.0.1/24' )
     r2.cmd( 'ifconfig r2-eth1 10.0.0.2/24' )
 
@@ -37,6 +37,9 @@ def run():
     h2.cmd( 'route add default gw 192.168.2.1' )
     r1.cmd( 'route add -net 192.168.2.0/24 gw 10.0.0.2' )
     r2.cmd( 'route add -net 192.168.1.0/24 gw 10.0.0.1' )
+
+    info( '*** Running pingAll\n' )
+    net.pingAll()
 
     info( '*** Running CLI\n' )
     CLI( net )
