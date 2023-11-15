@@ -33,7 +33,7 @@ def create_network():
     net.start()
     
     # Run the command to block traffic on switch s2
-    s2 = net.get('s2')
+    # s2 = net.get('s2')
     # s2.cmd('ovs-ofctl add-flow s2 nw_src=10.0.0.0/24,actions=drop')
 
     # Test network connectivity
