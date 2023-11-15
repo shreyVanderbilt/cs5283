@@ -74,6 +74,9 @@ def run():
     router2.cmd('ip route add 10.0.4.0/24 via 10.0.6.2')
     router3.cmd('ip route add 10.0.2.0/24 via 10.0.6.1')
     
+    info('*** Running pingAll\n')
+    net.pingAll()
+    
     info('*** Running CLI\n')
     CLI(net)
     
