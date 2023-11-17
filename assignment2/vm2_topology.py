@@ -1,11 +1,9 @@
-#!/usr/bin/python
-
-from mininet.net import Mininet
-from mininet.node import Node, OVSSwitch, Controller
-from mininet.cli import CLI
-from mininet.log import setLogLevel, info
-from mininet.link import TCLink
 from mininet.topo import Topo
+from mininet.net import Mininet
+from mininet.node import Node
+from mininet.log import setLogLevel, info
+from mininet.cli import CLI
+from mininet.link import TCLink
 
 class LinuxRouter(Node):
     "A Node with IP forwarding enabled."
@@ -16,84 +14,75 @@ class LinuxRouter(Node):
         self.cmd('sysctl net.ipv4.ip_forward=1')
 
     def terminate(self):
-        # Disable forwarding on the router
         self.cmd('sysctl net.ipv4.ip_forward=0')
         super(LinuxRouter, self).terminate()
 
-class SingleSwitchTopo(Topo):
-    "Single switch connected to n hosts."
-    def build(self, n=2):
-        switch = self.addSwitch('s1')
-        for h in range(n):
-            # Each host gets 50%/n of system CPU
-            host = self.addHost('h%s' % (h + 1),
-                                cpu=.5/n)
-            # 10 Mbps, 5ms delay, 2% loss, 1000 packet queue
-            self.addLink(host, switch, bw=10, delay='5ms', loss=2, max_queue_size=1000, use_htb=True)
+class NetworkTopo(Topo):
+    "A topology with three routers and three hosts."
 
-def createTopology():
-    "Create the network."
-    net = Mininet(controller=Controller, switch=OVSSwitch, link=TCLink)
+    def build(self, **_opts):
+        # Add routers
+        router1 = self.addNode('R1', cls=LinuxRouter, ip=None)
+        router2 = self.addNode('R2', cls=LinuxRouter, ip=None)
+        router3 = self.addNode('R3', cls=LinuxRouter, ip=None)
+        
+        # Add hosts
+        host1 = self.addHost('H1', ip='10.0.1.1/24', defaultRoute='via 10.0.1.254')
+        host2 = self.addHost('H2', ip='10.0.2.1/24', defaultRoute='via 10.0.2.254')
+        host3 = self.addHost('H3', ip='10.0.4.1/24', defaultRoute='via 10.0.4.254')
+        
+        # Add host-router links
+        self.addLink(host1, router1,
+                     intfName1='H1-eth0', params1={'ip': '10.0.1.1/24'},
+                     intfName2='R1-eth1', params2={'ip': '10.0.1.254/24'})
+        self.addLink(host2, router2,
+                     intfName1='H2-eth0', params1={'ip': '10.0.2.1/24'},
+                     intfName2='R2-eth2', params2={'ip': '10.0.2.254/24'})
+        self.addLink(host3, router3,
+                     intfName1='H3-eth0', params1={'ip': '10.0.4.1/24'},
+                     intfName2='R3-eth3', params2={'ip': '10.0.4.254/24'})
+        
+        # Add router-router links
+        self.addLink(router1, router2,
+                     intfName1='R1-eth2', params1={'ip': '10.0.3.1/24'},
+                     intfName2='R2-eth1', params2={'ip': '10.0.3.2/24'})
+        self.addLink(router1, router3,
+                     intfName1='R1-eth3', params1={'ip': '10.0.5.1/24'},
+                     intfName2='R3-eth1', params2={'ip': '10.0.5.2/24'})
+        self.addLink(router2, router3,
+                     intfName1='R2-eth3', params1={'ip': '10.0.6.1/24'},
+                     intfName2='R3-eth2', params2={'ip': '10.0.6.2/24'})
 
-    # Add controller
-    c0 = net.addController('c0')
-
-    # Create routers S and T
-    rS = net.addHost('rS', cls=LinuxRouter)
-    rT = net.addHost('rT', cls=LinuxRouter)
-
-    # Create routers Q R and V
-    rQ = net.addHost('rQ', cls=LinuxRouter, ip='192.168.10.1/24')
-    rR = net.addHost('rR', cls=LinuxRouter, ip='172.12.0.1/16')
-    rV = net.addHost('rV', cls=LinuxRouter, ip='10.100.0.1/16')
-
-    # Create routers P and U
-    rP = net.addHost('rP', cls=LinuxRouter, ip='172.16.3.1/24')
-    rU = net.addHost('rU', cls=LinuxRouter, ip='10.85.10.1/24')
-
-
-    # Create and add LANs to the network
-    lan_q_topo = SingleSwitchTopo(1)  # One host in LAN Q
-    lan_r_topo = SingleSwitchTopo(1)  # One host in LAN R
-    lan_v_topo = SingleSwitchTopo(1)  # One host in LAN V
-    lan_q = lan_q_topo.build()
-    lan_r = lan_r_topo.build()
-    lan_v = lan_v_topo.build()
-
-    # Create and add LANs to the network
-    lan_p_topo = SingleSwitchTopo(2)  # Two hosts in LAN P
-    lan_u_topo = SingleSwitchTopo(2)  # Two hosts in LAN U
-    lan_p = lan_p_topo.build()
-    lan_u = lan_u_topo.build()
-
-    # Correct the switch names to be unique
-    # Use canonical switch names
-    sQ = net.addSwitch('sQ', dpid='0000000000000001')
-    sR = net.addSwitch('sR', dpid='0000000000000002')
-    sV = net.addSwitch('sV', dpid='0000000000000003')
-    sP = net.addSwitch('sP', dpid='0000000000000004')
-    sU = net.addSwitch('sU', dpid='0000000000000005')
-
-    #Add links between routers and LANs
-    net.addLink(sQ, rQ, intfName2='rQ-eth1', params2={'ip': '192.168.10.1/24'})
-    net.addLink(sR, rR, intfName2='rR-eth1', params2={'ip': '172.12.0.1/16'})
-    net.addLink(sV, rV, intfName2='rV-eth1', params2={'ip': '10.100.0.1/16'})
-
-    net.addLink(sP, rP, intfName2='rP-eth1', params2={'ip': '172.16.5.1/24'})
-    net.addLink(sP, rP, intfName2='rP-eth2', params2={'ip': '172.16.3.1/24'})
-    net.addLink(sU, rU, intfName2='rU-eth1', params2={'ip': '10.85.10.1/24'})
-    net.addLink(sU, rU, intfName2='rU-eth2', params2={'ip': '10.85.8.1/24'})
+def run():
+    "Test linux router"
+    topo = NetworkTopo()
+    net = Mininet(topo=topo)
     
-    # Start the network
+    info('*** Starting network\n')
     net.start()
-
-    # Configure routes on routers P and U for their second subnet
-    rP.cmd('ip route add 172.16.5.0/24 dev rP-eth2')
-    rU.cmd('ip route add 10.85.8.0/24 dev rU-eth2')
-
+    
+    # Retrieve routers from the network
+    router1 = net['R1']
+    router2 = net['R2']
+    router3 = net['R3']
+    
+    # Setup routes
+    router1.cmd('ip route add 10.0.2.0/24 via 10.0.3.2')
+    router2.cmd('ip route add 10.0.1.0/24 via 10.0.3.1')
+    router1.cmd('ip route add 10.0.4.0/24 via 10.0.5.2')
+    router3.cmd('ip route add 10.0.1.0/24 via 10.0.5.1')
+    router2.cmd('ip route add 10.0.4.0/24 via 10.0.6.2')
+    router3.cmd('ip route add 10.0.2.0/24 via 10.0.6.1')
+    
+    info('*** Running pingAll\n')
+    net.pingAll()
+    
+    info('*** Running CLI\n')
     CLI(net)
+    
+    info('*** Stopping network\n')
     net.stop()
 
 if __name__ == '__main__':
     setLogLevel('info')
-    createTopology()
+    run()
