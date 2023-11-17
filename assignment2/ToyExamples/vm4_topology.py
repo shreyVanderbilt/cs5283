@@ -55,6 +55,8 @@ def run():
     info( '*** Starting network\n')
     net.start ()  # this method must be invoked to start the mininet
 
+    info('*** Running pingAll\n')
+    net.pingAll()
     
     info( '*** Running CLI\n' )
     CLI (net)   # this gives us mininet prompt
