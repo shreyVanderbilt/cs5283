@@ -1,0 +1,30 @@
+IP ADDRESS FOR VM1: 192.168.5.249
+
+IP ADDRESS FOR VM2: 192.168.5.139
+
+# Helper commands
+sudo ip link delete dev vxlan0 # if you need to delete the VxLAN
+
+sudo ufw disable # to help clean up the iptables
+
+
+From VM1 enter the following commands:
+
+sudo ip link add vxlan0 type vxlan id 100 local 192.168.5.249 remote 192.168.5.139 dev ens3 dstport 4789
+
+sudo ip addr add 192.168.100.2/24 dev vxlan0
+
+sudo ip link set vxlan0 up
+
+sudo ip route add 10.0.4.0/24 via 192.168.100.3 dev vxlan0
+
+
+From VM2 enter the following commands:
+
+sudo ip link add vxlan0 type vxlan id 100 local 192.168.5.139 remote 192.168.5.249 dev ens3 dstport 4789
+
+sudo ip addr add 192.168.100.3/24 dev vxlan0
+
+sudo ip link set vxlan0 up
+
+sudo ip route add 10.0.1.0/24 via 192.168.100.2 dev vxlan0
