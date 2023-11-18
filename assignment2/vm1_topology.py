@@ -67,9 +67,9 @@ def run():
     info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth')) #Allows NAT -> Router
     info(net['r1'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev r1-nat-eth')) #Allows Router -> NAT
 
-    info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth'))
+    info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth')) #Allows Router -> External NATs
 
-    # info(net['h1'].cmd('ip route add default via 10.1.1.1'))
+    info(net['h1'].cmd('ip route add default via 10.1.1.1'))
 
     # info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
 
@@ -79,7 +79,7 @@ def run():
     info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Allows NAT -> Router
     info(net['r2'].cmd('ip route add 10.2.3.0/24 via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> NAT
 
-    # info(net['r2'].cmd('ip route add default via 10.2.2.2 dev r2-nat-eth'))
+    info(net['r2'].cmd('ip route add default via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> External NATs
 
     # info(net['h2'].cmd('ip route add default via 10.2.1.1'))
 
@@ -91,7 +91,7 @@ def run():
     info(net['nat3'].cmd('ip route add 10.3.1.0/24 via 10.3.2.1 dev nat-r3-eth')) #Allows NAT -> Router
     info(net['r3'].cmd('ip route add 10.3.3.0/24 via 10.3.2.2 dev r3-nat-eth')) #Allows Router -> NAT
 
-    # info(net['r3'].cmd('ip route add default via 10.3.2.2 dev r3-nat-eth'))
+    info(net['r3'].cmd('ip route add default via 10.3.2.2 dev r3-nat-eth')) #Allows Router -> External NATs
 
     # info(net['h3'].cmd('ip route add default via 10.3.1.1'))
 
