@@ -46,15 +46,26 @@ class NetworkTopo (Topo):
 
         self.addLink(hP0, sP)
         self.addLink(hP2, sP)
-        # self.addLink(host3, switch3)
-
-        # self.addLink(switch1, router1,
-        #         intfName2='r1-s1-eth', params2={'ip':'10.1.1.1/24'})
-        # self.addLink(switch2, router2,
-        #         intfName2='r2-s2-eth', params2={'ip':'10.2.1.1/24'})
-        # self.addLink(switch3, router3,
-        #         intfName2='r3-s3-eth', params2={'ip':'10.3.1.1/24'})
-
+        self.addLink(hQ0, sQ)
+        self.addLink(hR2, sR)
+        self.addLink(hU0, sU)
+        self.addLink(hU2, sU)
+        self.addLink(hV0, sV)
+        
+        self.addLink(sP, rP,
+                intfName2='rP-sP-eth', params2={'ip':'10.1.1.1/24'})
+        self.addLink(sQ, rQ,
+                intfName2='rQ-sQ-eth', params2={'ip':'10.1.2.1/24'})
+        self.addLink(sR, rR,
+                intfName2='rR-sR-eth', params2={'ip':'10.1.3.1/24'})
+        self.addLink(sS, rS,
+                intfName2='rS-sS-eth', params2={'ip':'10.1.4.1/24'})
+        self.addLink(sT, rT,
+                intfName2='rT-sT-eth', params2={'ip':'10.1.5.1/24'})
+        self.addLink(sU, rU,
+                intfName2='rU-sU-eth', params2={'ip':'10.1.6.1/24'})
+        self.addLink(sV, rV,
+                intfName2='rV-sV-eth', params2={'ip':'10.1.7.1/24'})
 
 def run():
     # Then create the network object from this topology
