@@ -64,7 +64,7 @@ def run():
             intfName2='nat-r3-eth', params2={'ip':'10.3.2.2/24'})
 
     # #NAT 1 Rule Set
-    # info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth'))
     # info(net['r1'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev r1-nat-eth'))
 
     # info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth'))
