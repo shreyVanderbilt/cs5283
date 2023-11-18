@@ -64,10 +64,10 @@ def run():
             intfName2='nat-r3-eth', params2={'ip':'10.3.2.2/24'})
 
     # #NAT 1 Rule Set
-    info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth')) #Ties NAT to Router
-    info(net['r1'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev r1-nat-eth'))
+    info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth')) #Allows NAT -> Router
+    info(net['r1'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev r1-nat-eth')) #Allows Router -> NAT
 
-    # info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth'))
+    info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth'))
 
     # info(net['h1'].cmd('ip route add default via 10.1.1.1'))
 
@@ -76,8 +76,8 @@ def run():
     # info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
 
     # #NAT 2 Rule Set
-    info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Ties NAT to Router
-    # info(net['r2'].cmd('ip route add 10.2.3.0/24 via 10.2.2.2 dev r2-nat-eth'))
+    info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Allows NAT -> Router
+    info(net['r2'].cmd('ip route add 10.2.3.0/24 via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> NAT
 
     # info(net['r2'].cmd('ip route add default via 10.2.2.2 dev r2-nat-eth'))
 
@@ -88,8 +88,8 @@ def run():
     # info(net['nat2'].cmd('iptables -D FORWARD -i nat2-eth0 -d 10.2.0.0/8 -j DROP'))
 
     # #NAT 3 Rule Set
-    info(net['nat3'].cmd('ip route add 10.3.1.0/24 via 10.3.2.1 dev nat-r3-eth')) #Ties NAT to Router
-    # info(net['r3'].cmd('ip route add 10.3.3.0/24 via 10.3.2.2 dev r3-nat-eth'))
+    info(net['nat3'].cmd('ip route add 10.3.1.0/24 via 10.3.2.1 dev nat-r3-eth')) #Allows NAT -> Router
+    info(net['r3'].cmd('ip route add 10.3.3.0/24 via 10.3.2.2 dev r3-nat-eth')) #Allows Router -> NAT
 
     # info(net['r3'].cmd('ip route add default via 10.3.2.2 dev r3-nat-eth'))
 

@@ -22,12 +22,16 @@ class NetworkTopo(Topo):
 
     def build(self, **_opts):
         # Add routers
-        router1 = self.addNode('R1', cls=LinuxRouter, ip=None)
-        router2 = self.addNode('R2', cls=LinuxRouter, ip=None)
-        router3 = self.addNode('R3', cls=LinuxRouter, ip=None)
-        
+        rP = self.addNode('rP', cls=LinuxRouter, ip=None)
+        rQ = self.addNode('rQ', cls=LinuxRouter, ip=None)
+        rR = self.addNode('rR', cls=LinuxRouter, ip=None)
+        rS = self.addNode('rS', cls=LinuxRouter, ip=None)
+        rT = self.addNode('rT', cls=LinuxRouter, ip=None)
+        rU = self.addNode('rU', cls=LinuxRouter, ip=None)
+        rV = self.addNode('rV', cls=LinuxRouter, ip=None)
+
         # Add hosts
-        host1 = self.addHost('H1', ip='10.0.1.1/24', defaultRoute='via 10.0.1.254')
+        hP1 = self.addHost('hP1', ip='10.0.1.1/24', defaultRoute='via 10.0.1.254')
         host2 = self.addHost('H2', ip='10.0.2.1/24', defaultRoute='via 10.0.2.254')
         host3 = self.addHost('H3', ip='10.0.4.1/24', defaultRoute='via 10.0.4.254')
         
