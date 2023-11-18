@@ -1,91 +1,129 @@
+#!/usr/bin/python
+
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.node import Node
 from mininet.log import setLogLevel, info
 from mininet.cli import CLI
-from mininet.link import TCLink
 
-class LinuxRouter(Node):
-    "A Node with IP forwarding enabled."
+class LinuxRouter (Node):
+    def config (self, **params):
+        super (LinuxRouter, self).config (**params)
+        self.cmd ('sysctl net.ipv4.ip_forward=1')
 
-    def config(self, **params):
-        super(LinuxRouter, self).config(**params)
-        # Enable forwarding on the router
-        self.cmd('sysctl net.ipv4.ip_forward=1')
+    def terminate (self):
+        self.cmd ('sysctl net.ipv4.ip_forward=0')
+        super (LinuxRouter, self).terminate ()
 
-    def terminate(self):
-        self.cmd('sysctl net.ipv4.ip_forward=0')
-        super(LinuxRouter, self).terminate()
 
-class NetworkTopo(Topo):
-    "A topology with three routers and three hosts."
+class NetworkTopo (Topo):
 
     def build(self, **_opts):
-        # Add routers
-        rP = self.addNode('rP', cls=LinuxRouter, ip=None)
-        rQ = self.addNode('rQ', cls=LinuxRouter, ip=None)
-        rR = self.addNode('rR', cls=LinuxRouter, ip=None)
-        rS = self.addNode('rS', cls=LinuxRouter, ip=None)
-        rT = self.addNode('rT', cls=LinuxRouter, ip=None)
-        rU = self.addNode('rU', cls=LinuxRouter, ip=None)
-        rV = self.addNode('rV', cls=LinuxRouter, ip=None)
+        rP = self.addNode('rP', cls=LinuxRouter, ip='10.1.1.1/24')
+        rQ = self.addNode('rQ', cls=LinuxRouter, ip='10.2.1.1/24')
+        rR = self.addNode('rR', cls=LinuxRouter, ip='10.3.1.1/24')
+        rS = self.addNode('rS', cls=LinuxRouter, ip='10.4.1.1/24')
+        rT = self.addNode('rT', cls=LinuxRouter, ip='10.5.1.1/24')
+        rU = self.addNode('rU', cls=LinuxRouter, ip='10.6.1.1/24')
+        rV = self.addNode('rV', cls=LinuxRouter, ip='10.7.1.1/24')
 
-        # Add hosts
-        hP1 = self.addHost('hP1', ip='10.0.1.1/24', defaultRoute='via 10.0.1.254')
-        host2 = self.addHost('H2', ip='10.0.2.1/24', defaultRoute='via 10.0.2.254')
-        host3 = self.addHost('H3', ip='10.0.4.1/24', defaultRoute='via 10.0.4.254')
-        
-        # Add host-router links
-        self.addLink(host1, router1,
-                     intfName1='H1-eth0', params1={'ip': '10.0.1.1/24'},
-                     intfName2='R1-eth1', params2={'ip': '10.0.1.254/24'})
-        self.addLink(host2, router2,
-                     intfName1='H2-eth0', params1={'ip': '10.0.2.1/24'},
-                     intfName2='R2-eth2', params2={'ip': '10.0.2.254/24'})
-        self.addLink(host3, router3,
-                     intfName1='H3-eth0', params1={'ip': '10.0.4.1/24'},
-                     intfName2='R3-eth3', params2={'ip': '10.0.4.254/24'})
-        
-        # Add router-router links
-        self.addLink(router1, router2,
-                     intfName1='R1-eth2', params1={'ip': '10.0.3.1/24'},
-                     intfName2='R2-eth1', params2={'ip': '10.0.3.2/24'})
-        self.addLink(router1, router3,
-                     intfName1='R1-eth3', params1={'ip': '10.0.5.1/24'},
-                     intfName2='R3-eth1', params2={'ip': '10.0.5.2/24'})
-        self.addLink(router2, router3,
-                     intfName1='R2-eth3', params1={'ip': '10.0.6.1/24'},
-                     intfName2='R3-eth2', params2={'ip': '10.0.6.2/24'})
+        sP = self.addSwitch('sP')
+        sQ = self.addSwitch('sQ')
+        sR = self.addSwitch('sR')
+        sS = self.addSwitch('sS')
+        sT = self.addSwitch('sT')
+        sU = self.addSwitch('sU')
+        sV = self.addSwitch('sV')
+
+        hP0 = self.addHost('hP0', ip='172.16.3.0/24', defaultRoute='via 10.1.1.1')
+        hP2 = self.addHost('hP2', ip='172.16.5.0/24', defaultRoute='via 10.1.1.1')
+        hQ0 = self.addHost('hQ0', ip='192.168.10.0/24', defaultRoute='via 10.2.1.1')
+        hR2 = self.addHost('hR2', ip='172.12.0.0/16', defaultRoute='via 10.3.1.1')
+        hU0 = self.addHost('hU0', ip='10.85.10.0/24', defaultRoute='via 10.6.1.1')
+        hU2 = self.addHost('hU2', ip='10.85.8.0/24', defaultRoute='via 10.6.1.1')
+        hV0 = self.addHost('hV0', ip='10.100.0.0/16', defaultRoute='via 10.7.1.1')
+
+
+        self.addLink(hP0, sP)
+        self.addLink(hP2, sP)
+        # self.addLink(host3, switch3)
+
+        # self.addLink(switch1, router1,
+        #         intfName2='r1-s1-eth', params2={'ip':'10.1.1.1/24'})
+        # self.addLink(switch2, router2,
+        #         intfName2='r2-s2-eth', params2={'ip':'10.2.1.1/24'})
+        # self.addLink(switch3, router3,
+        #         intfName2='r3-s3-eth', params2={'ip':'10.3.1.1/24'})
+
 
 def run():
-    "Test linux router"
-    topo = NetworkTopo()
-    net = Mininet(topo=topo)
+    # Then create the network object from this topology
+    net = Mininet(topo=NetworkTopo())
+
+    # net.addNAT(name='nat1', ip='10.1.3.1').configDefault()
+    # net.addNAT(name='nat2', ip='10.2.3.1').configDefault()
+    # net.addNAT(name='nat3', ip='10.3.3.1').configDefault()
+
+    # net.addLink(net['r1'], net['nat1'],
+    #             intfName1='r1-nat-eth', params1={'ip':'10.1.2.1/24'},
+    #             intfName2='nat-r1-eth', params2={'ip':'10.1.2.2/24'})
     
-    info('*** Starting network\n')
-    net.start()
+    # net.addLink(net['r2'], net['nat2'],
+    #         intfName1='r2-nat-eth', params1={'ip':'10.2.2.1/24'},
+    #         intfName2='nat-r2-eth', params2={'ip':'10.2.2.2/24'})
     
-    # Retrieve routers from the network
-    router1 = net['R1']
-    router2 = net['R2']
-    router3 = net['R3']
+    # net.addLink(net['r3'], net['nat3'],
+    #         intfName1='r3-nat-eth', params1={'ip':'10.3.2.1/24'},
+    #         intfName2='nat-r3-eth', params2={'ip':'10.3.2.2/24'})
+
+    # # #NAT 1 Rule Set
+    # info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.1.2.1 dev nat-r1-eth')) #Allows NAT -> Router
+    # info(net['r1'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev r1-nat-eth')) #Allows Router -> NAT
+
+    # info(net['r1'].cmd('ip route add default via 10.1.2.2 dev r1-nat-eth')) #Allows Router -> External NATs
+
+    # info(net['h1'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
+
+    # info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
+
+    # info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
+
+    # # #NAT 2 Rule Set
+    # info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Allows NAT -> Router
+    # info(net['r2'].cmd('ip route add 10.2.3.0/24 via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> NAT
+
+    # info(net['r2'].cmd('ip route add default via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> External NATs
+
+    # info(net['h2'].cmd('ip route add default via 10.2.1.1')) #Allows Host -> Router
+
+    # info(net['nat2'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
+
+    # info(net['nat2'].cmd('iptables -D FORWARD -i nat2-eth0 -d 10.2.0.0/8 -j DROP'))
+
+    # # #NAT 3 Rule Set
+    # info(net['nat3'].cmd('ip route add 10.3.1.0/24 via 10.3.2.1 dev nat-r3-eth')) #Allows NAT -> Router
+    # info(net['r3'].cmd('ip route add 10.3.3.0/24 via 10.3.2.2 dev r3-nat-eth')) #Allows Router -> NAT
+
+    # info(net['r3'].cmd('ip route add default via 10.3.2.2 dev r3-nat-eth')) #Allows Router -> External NATs
+
+    # info(net['h3'].cmd('ip route add default via 10.3.1.1')) #Allows Host -> Router
+
+    # info(net['nat3'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
+
+    # info(net['nat3'].cmd('iptables -D FORWARD -i nat3-eth0 -d 10.3.0.0/8 -j DROP'))
     
-    # Setup routes
-    router1.cmd('ip route add 10.0.2.0/24 via 10.0.3.2')
-    router2.cmd('ip route add 10.0.1.0/24 via 10.0.3.1')
-    router1.cmd('ip route add 10.0.4.0/24 via 10.0.5.2')
-    router3.cmd('ip route add 10.0.1.0/24 via 10.0.5.1')
-    router2.cmd('ip route add 10.0.4.0/24 via 10.0.6.2')
-    router3.cmd('ip route add 10.0.2.0/24 via 10.0.6.1')
-    
+    info( '*** Starting network\n')
+    net.start ()  # this method must be invoked to start the mininet
+
     info('*** Running pingAll\n')
     net.pingAll()
-    
-    info('*** Running CLI\n')
-    CLI(net)
-    
-    info('*** Stopping network\n')
-    net.stop()
+
+    info( '*** Running CLI\n' )
+    CLI (net)   # this gives us mininet prompt
+
+    info( '*** Stopping network' )
+    net.stop ()  # this cleans up the network
+
 
 if __name__ == '__main__':
     setLogLevel('info')
