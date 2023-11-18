@@ -71,9 +71,9 @@ def run():
 
     info(net['h1'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
 
-    # info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
+    info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
 
-    # info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
+    info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
 
     # #NAT 2 Rule Set
     info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Allows NAT -> Router
@@ -83,9 +83,9 @@ def run():
 
     info(net['h2'].cmd('ip route add default via 10.2.1.1')) #Allows Host -> Router
 
-    # info(net['nat2'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
+    info(net['nat2'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
 
-    # info(net['nat2'].cmd('iptables -D FORWARD -i nat2-eth0 -d 10.2.0.0/8 -j DROP'))
+    info(net['nat2'].cmd('iptables -D FORWARD -i nat2-eth0 -d 10.2.0.0/8 -j DROP'))
 
     # #NAT 3 Rule Set
     info(net['nat3'].cmd('ip route add 10.3.1.0/24 via 10.3.2.1 dev nat-r3-eth')) #Allows NAT -> Router
@@ -95,9 +95,9 @@ def run():
 
     info(net['h3'].cmd('ip route add default via 10.3.1.1')) #Allows Host -> Router
 
-    # info(net['nat3'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
+    info(net['nat3'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
 
-    # info(net['nat3'].cmd('iptables -D FORWARD -i nat3-eth0 -d 10.3.0.0/8 -j DROP'))
+    info(net['nat3'].cmd('iptables -D FORWARD -i nat3-eth0 -d 10.3.0.0/8 -j DROP'))
     
     info( '*** Starting network\n')
     net.start ()  # this method must be invoked to start the mininet
