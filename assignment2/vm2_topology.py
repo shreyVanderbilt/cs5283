@@ -82,6 +82,24 @@ def run():
     net.addLink(net['rP'], net['natP'],
                 intfName1='rP-nat-eth', params1={'ip':'10.1.2.1/24'},
                 intfName2='nat-rP-eth', params2={'ip':'10.1.2.2/24'})
+    net.addLink(net['rQ'], net['natQ'],
+                intfName1='rQ-nat-eth', params1={'ip':'10.2.2.1/24'},
+                intfName2='nat-rQ-eth', params2={'ip':'10.2.2.2/24'})
+    net.addLink(net['rR'], net['natR'],
+                intfName1='rR-nat-eth', params1={'ip':'10.3.2.1/24'},
+                intfName2='nat-rR-eth', params2={'ip':'10.3.2.2/24'})
+    net.addLink(net['rS'], net['natS'],
+                intfName1='rS-nat-eth', params1={'ip':'10.4.2.1/24'},
+                intfName2='nat-rS-eth', params2={'ip':'10.4.2.2/24'})
+    net.addLink(net['rT'], net['natT'],
+                intfName1='rT-nat-eth', params1={'ip':'10.5.2.1/24'},
+                intfName2='nat-rT-eth', params2={'ip':'10.5.2.2/24'})
+    net.addLink(net['rU'], net['natU'],
+                intfName1='rU-nat-eth', params1={'ip':'10.6.2.1/24'},
+                intfName2='nat-rU-eth', params2={'ip':'10.6.2.2/24'})
+    net.addLink(net['rV'], net['natV'],
+                intfName1='rV-nat-eth', params1={'ip':'10.7.2.1/24'},
+                intfName2='nat-rV-eth', params2={'ip':'10.7.2.2/24'})
     
     # net.addLink(net['r2'], net['nat2'],
     #         intfName1='r2-nat-eth', params1={'ip':'10.2.2.1/24'},
