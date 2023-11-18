@@ -71,13 +71,17 @@ def run():
     # Then create the network object from this topology
     net = Mininet(topo=NetworkTopo())
 
-    # net.addNAT(name='nat1', ip='10.1.3.1').configDefault()
-    # net.addNAT(name='nat2', ip='10.2.3.1').configDefault()
-    # net.addNAT(name='nat3', ip='10.3.3.1').configDefault()
+    net.addNAT(name='natP', ip='10.1.3.1').configDefault()
+    net.addNAT(name='natQ', ip='10.2.3.1').configDefault()
+    net.addNAT(name='natR', ip='10.3.3.1').configDefault()
+    net.addNAT(name='natS', ip='10.4.3.1').configDefault()
+    net.addNAT(name='natT', ip='10.5.3.1').configDefault()
+    net.addNAT(name='natU', ip='10.6.3.1').configDefault()
+    net.addNAT(name='natV', ip='10.7.3.1').configDefault()
 
-    # net.addLink(net['r1'], net['nat1'],
-    #             intfName1='r1-nat-eth', params1={'ip':'10.1.2.1/24'},
-    #             intfName2='nat-r1-eth', params2={'ip':'10.1.2.2/24'})
+    net.addLink(net['rP'], net['natP'],
+                intfName1='rP-nat-eth', params1={'ip':'10.1.2.1/24'},
+                intfName2='nat-rP-eth', params2={'ip':'10.1.2.2/24'})
     
     # net.addLink(net['r2'], net['nat2'],
     #         intfName1='r2-nat-eth', params1={'ip':'10.2.2.1/24'},
