@@ -71,7 +71,7 @@ def run():
 
     info(net['h1'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
 
-    info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
+    # info(net['nat1'].cmd('ip route add default via 192.168.100.3 dev vxlan0'))
 
     # info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
 
