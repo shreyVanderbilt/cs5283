@@ -108,7 +108,8 @@ def run():
 
     info(net['rP'].cmd('ip route add default via 10.1.2.2 dev rP-nat-eth')) #Allows Router -> External NATs
 
-    info(net['hP'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
+    info(net['hP0'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
+    info(net['hP2'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
 
     info(net['natP'].cmd('ip route add default via 192.168.100.2 dev vxlan0')) #Allows NAT -> VxLAN
 
