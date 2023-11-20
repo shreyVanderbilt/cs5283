@@ -26,12 +26,13 @@ class NetworkTopo (Topo):
         self.addLink(host1, switch1)
         self.addLink(switch1, router1,
                 intfName2='r1-s1-eth', params2={'ip':'10.0.10.1/24'})
-
+        
+        router2 = self.addNode('r2', cls=LinuxRouter, ip='10.0.20.1/24')
         switch2 = self.addSwitch('s2')
         host2 = self.addHost('h2', ip='10.0.20.254/24', defaultRoute='via 10.0.20.1')
         self.addLink(host2, switch2)
-        self.addLink(switch2, router1,
-                intfName2='r1-s2-eth', params2={'ip':'10.0.20.1/24'})
+        self.addLink(switch2, router2,
+                intfName2='r2-s2-eth', params2={'ip':'10.0.20.1/24'})
 
         router3 = self.addNode('r3', cls=LinuxRouter, ip='10.0.30.1/24')
         switch3 = self.addSwitch('s3')
