@@ -51,7 +51,7 @@ class NetworkTopo (Topo):
         # self.addLink(hV0, s7)
         
         self.addLink(s1, rP,
-                intfName2='rP-sP-eth', params2={'ip':'10.1.1.1/24'})
+                intfName2='rP-s1-eth', params2={'ip':'10.1.1.1/24'})
         # self.addLink(s2, rQ,
         #         intfName2='rQ-sQ-eth', params2={'ip':'10.1.2.1/24'})
         # self.addLink(s3, rR,
