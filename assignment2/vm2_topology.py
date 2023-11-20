@@ -15,65 +15,69 @@ class LinuxRouter (Node):
         self.cmd ('sysctl net.ipv4.ip_forward=0')
         super (LinuxRouter, self).terminate ()
 
+
 class NetworkTopo (Topo):
 
     def build(self, **_opts):
-        rP = self.addNode('rP', cls=LinuxRouter, ip='172.16.1.1/24')
-        # rQ = self.addNode('rQ', cls=LinuxRouter, ip='10.2.1.1/24')
-        # rR = self.addNode('rR', cls=LinuxRouter, ip='10.3.1.1/24')
-        # rS = self.addNode('rS', cls=LinuxRouter, ip='10.4.1.1/24')
-        # rT = self.addNode('rT', cls=LinuxRouter, ip='10.5.1.1/24')
-        # rU = self.addNode('rU', cls=LinuxRouter, ip='10.6.1.1/24')
-        # rV = self.addNode('rV', cls=LinuxRouter, ip='10.7.1.1/24')
 
-        s1 = self.addSwitch('s1') # sP (had to rename following dpid error)
-        # s2 = self.addSwitch('s2') # sQ
-        # s3 = self.addSwitch('s3') # sR
-        # s4 = self.addSwitch('s4') # sS
-        # s5 = self.addSwitch('s5') # sT
-        # s6 = self.addSwitch('s6') # sU
-        # s7 = self.addSwitch('s7') # sV
+        router1 = self.addNode('r1', cls=LinuxRouter, ip='10.0.10.1/24')
+        switch1 = self.addSwitch('s1')
+        host1 = self.addHost('h1', ip='10.0.10.254/24', defaultRoute='via 10.0.10.1')
+        self.addLink(host1, switch1)
+        self.addLink(switch1, router1,
+                intfName2='r1-s1-eth', params2={'ip':'10.0.10.1/24'})
 
-        hP0 = self.addHost('hP0', ip='172.16.3.0/24', defaultRoute='via 172.16.1.1')
-        hP2 = self.addHost('hP2', ip='172.16.5.0/24', defaultRoute='via 172.16.1.1')
-        # hQ0 = self.addHost('hQ0', ip='192.168.10.0/24', defaultRoute='via 10.2.1.1')
-        # hR2 = self.addHost('hR2', ip='172.12.0.0/16', defaultRoute='via 10.3.1.1')
-        # hU0 = self.addHost('hU0', ip='10.85.10.0/24', defaultRoute='via 10.6.1.1')
-        # hU2 = self.addHost('hU2', ip='10.85.8.0/24', defaultRoute='via 10.6.1.1')
-        # hV0 = self.addHost('hV0', ip='10.100.0.0/16', defaultRoute='via 10.7.1.1')
+        switch2 = self.addSwitch('s2')
+        host2 = self.addHost('h2', ip='10.0.20.254/24', defaultRoute='via 10.0.20.1')
+        self.addLink(host2, switch2)
+        self.addLink(switch2, router1,
+                intfName2='r1-s2-eth', params2={'ip':'10.0.20.1/24'})
 
-        self.addLink(hP0, s1)
-        self.addLink(hP2, s1)
-        # self.addLink(hQ0, s2)
-        # self.addLink(hR2, s3)
-        # self.addLink(hU0, s6)
-        # self.addLink(hU2, s6)
-        # self.addLink(hV0, s7)
+        router3 = self.addNode('r3', cls=LinuxRouter, ip='10.0.30.1/24')
+        switch3 = self.addSwitch('s3')
+        host3 = self.addHost('h3', ip='10.0.30.254/24', defaultRoute='via 10.0.30.1')
+        self.addLink(host3, switch3)
+        self.addLink(switch3, router3,
+                intfName2='r3-s3-eth', params2={'ip':'10.0.30.1/24'})
+
+        router4 = self.addNode('r4', cls=LinuxRouter, ip='10.0.40.1/24')
+        switch4 = self.addSwitch('s4')
+        host4 = self.addHost('h4', ip='10.0.40.254/24', defaultRoute='via 10.0.40.1')
+        self.addLink(host4, switch4)
+        self.addLink(switch4, router4,
+                intfName2='r4-s4-eth', params2={'ip':'10.0.40.1/24'})
+
+        router5 = self.addNode('r5', cls=LinuxRouter, ip='10.0.50.1/24')
+        switch5 = self.addSwitch('s5')
+        host5 = self.addHost('h5', ip='10.0.50.254/24', defaultRoute='via 10.0.50.1')
+        self.addLink(host5, switch5)
+        self.addLink(switch5, router5,
+                intfName2='r5-s5-eth', params2={'ip':'10.0.50.1/24'})
+
+        router6 = self.addNode('r6', cls=LinuxRouter, ip='10.0.60.1/24')
+        switch6 = self.addSwitch('s6')        
+        host6 = self.addHost('h6', ip='10.0.60.254/24', defaultRoute='via 10.0.60.1')
+        self.addLink(host6, switch6)
+        self.addLink(switch6, router6,
+                intfName2='r6-s6-eth', params2={'ip':'10.0.60.1/24'})
+
+        router7 = self.addNode('r7', cls=LinuxRouter, ip='10.0.70.1/24')
+        switch7 = self.addSwitch('s7')
+        host7 = self.addHost('h7', ip='10.0.70.254/24', defaultRoute='via 10.0.70.1')
+        self.addLink(host7, switch7)
+        self.addLink(switch7, router7,
+                intfName2='r7-s7-eth', params2={'ip':'10.0.70.1/24'})
+
+        router8 = self.addNode('r8', cls=LinuxRouter, ip='10.0.80.1/24')
+        switch8 = self.addSwitch('s8')
+        host8 = self.addHost('h8', ip='10.0.80.254/24', defaultRoute='via 10.0.80.1')
+        self.addLink(host8, switch8)
+        self.addLink(switch8, router8,
+                intfName2='r8-s8-eth', params2={'ip':'10.0.80.1/24'})
         
-        self.addLink(s1, rP,
-                intfName2='rP-s1-eth', params2={'ip':'172.16.1.1/24'})
-        # self.addLink(s2, rQ,
-        #         intfName2='rQ-sQ-eth', params2={'ip':'10.1.2.1/24'})
-        # self.addLink(s3, rR,
-        #         intfName2='rR-sR-eth', params2={'ip':'10.1.3.1/24'})
-        # self.addLink(s4, rS,
-        #         intfName2='rS-sS-eth', params2={'ip':'10.1.4.1/24'})
-        # self.addLink(s5, rT,
-        #         intfName2='rT-sT-eth', params2={'ip':'10.1.5.1/24'})
-        # self.addLink(s6, rU,
-        #         intfName2='rU-sU-eth', params2={'ip':'10.1.6.1/24'})
-        # self.addLink(s7, rV,
-        #         intfName2='rV-sV-eth', params2={'ip':'10.1.7.1/24'})
-        
-        # self.addLink(rP, rQ,
-        #         intfName1='rP-rQ-eth', params1={'ip':'10.0.10.1/24'},
-        #         intfName2='rQ-rP-eth', params2={'ip':'10.0.10.2/24'})
-        # self.addLink(rP, rR,
-        #         intfName1='rP-rR-eth', params1={'ip':'10.0.20.1/24'},
-        #         intfName2='rR-rP-eth', params2={'ip':'10.0.20.2/24'})
-        # self.addLink(rQ, rS,
-        #         intfName1='rQ-rS-eth', params1={'ip':'10.0.30.1/24'},
-        #         intfName2='rS-rQ-eth', params2={'ip':'10.0.30.2/24'})
+        self.addLink(router3, router1,
+                intfName1='r3-r1-eth', params1={'ip':'10.0.44.1/24'},
+                intfName2='r1-r3-eth', params2={'ip':'10.0.44.2/24'})
 
 def run():
     # Then create the network object from this topology
@@ -81,31 +85,48 @@ def run():
 
     net.addNAT(name='nat1', ip='10.0.42.1').configDefault()
 
-    net.addLink(net['rP'], net['nat1'],
-                intfName1='rP-nat-eth', params1={'ip':'10.0.41.1/24'},
-                intfName2='nat-rP-eth', params2={'ip':'10.0.41.2/24'})
+    net.addLink(net['r1'], net['nat1'],
+                intfName1='r1-nat-eth', params1={'ip':'10.0.41.1/24'},
+                intfName2='nat-r1-eth', params2={'ip':'10.0.41.2/24'})
 
-    #NAT & Router P Connection
-    info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
-    info(net['nat1'].cmd('ip route add 172.16.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
-    
-    info(net['rP'].cmd('ip route add default via 10.0.41.1 dev nat-rP-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.10.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.20.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.30.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.40.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.50.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.60.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.70.0/24 via 10.0.41.1 dev nat-r1-eth'))
+    info(net['nat1'].cmd('ip route add 10.0.80.0/24 via 10.0.41.1 dev nat-r1-eth'))
 
-    #Host & Router P Connection
-    info(net['hP0'].cmd('ip route add default via 10.1.1.1'))
-    info(net['hP2'].cmd('ip route add default via 10.1.1.1'))
+    info(net['r1'].cmd('ip route add 10.0.42.0/24 via 10.0.41.2 dev r1-nat-eth')) 
+    info(net['r3'].cmd('ip route add 10.0.42.0/24 via 10.0.44.2 dev r3-r1-eth'))  
+
+    info(net['r1'].cmd('ip route add default via 10.0.41.2 dev r1-nat-eth'))
+    info(net['r1'].cmd('ip route add 10.0.20.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.30.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.40.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.50.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.60.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.70.0/24 via 10.0.44.1 dev r1-r3-eth'))
+    info(net['r1'].cmd('ip route add 10.0.80.0/24 via 10.0.44.1 dev r1-r3-eth'))
+
+    info(net['h1'].cmd('ip route add default via 10.0.10.1'))
+
+    info(net['nat1'].cmd('ip route add default via 192.168.100.2 dev vxlan0'))
+
+    info(net['nat1'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.0.0.0/8 -j DROP'))
     
     info( '*** Starting network\n')
-    net.start ()  # this method must be invoked to start the mininet
+    net.start()
 
     info('*** Running pingAll\n')
     net.pingAll()
 
     info( '*** Running CLI\n' )
-    CLI (net)   # this gives us mininet prompt
+    CLI(net)
 
     info( '*** Stopping network' )
-    net.stop ()  # this cleans up the network
+    net.stop()
 
 
 if __name__ == '__main__':
