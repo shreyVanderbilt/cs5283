@@ -64,6 +64,16 @@ class NetworkTopo (Topo):
                 intfName2='rU-sU-eth', params2={'ip':'10.1.6.1/24'})
         self.addLink(s7, rV,
                 intfName2='rV-sV-eth', params2={'ip':'10.1.7.1/24'})
+        
+        self.addLink(rP, rQ,
+                intfName1='rP-rQ-eth', params1={'ip':'10.0.10.1/24'},
+                intfName2='rQ-rP-eth', params2={'ip':'10.0.10.2/24'})
+        self.addLink(rP, rR,
+                intfName1='rP-rR-eth', params1={'ip':'10.0.20.1/24'},
+                intfName2='rR-rP-eth', params2={'ip':'10.0.20.2/24'})
+        self.addLink(rQ, rS,
+                intfName1='rQ-rS-eth', params1={'ip':'10.0.30.1/24'},
+                intfName2='rS-rQ-eth', params2={'ip':'10.0.30.2/24'})
 
 def run():
     # Then create the network object from this topology
