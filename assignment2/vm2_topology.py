@@ -87,6 +87,9 @@ def run():
 
     #NAT & Router P Connection
     info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
+
+    info(net['rP'].cmd('ip route add default via 10.0.41.1 dev nat-rP-eth'))
+
     #Host & Router P Connection
     info(net['hP0'].cmd('ip route add default via 10.1.1.1'))
     info(net['hP2'].cmd('ip route add default via 10.1.1.1'))
