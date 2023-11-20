@@ -85,7 +85,11 @@ def run():
                 intfName1='rP-nat-eth', params1={'ip':'10.0.41.1/24'},
                 intfName2='nat-rP-eth', params2={'ip':'10.0.41.2/24'})
 
+    #NAT & Router P Connection
     info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
+    #Host & Router P Connection
+    info(net['hP0'].cmd('ip route add default via 10.1.1.1'))
+    info(net['hP2'].cmd('ip route add default via 10.1.1.1'))
     
     info( '*** Starting network\n')
     net.start ()  # this method must be invoked to start the mininet
