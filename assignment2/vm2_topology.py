@@ -79,6 +79,12 @@ def run():
     # Then create the network object from this topology
     net = Mininet(topo=NetworkTopo())
 
+    net.addNAT(name='nat1', ip='10.0.42.1').configDefault()
+
+    net.addLink(net['rP'], net['nat1'],
+                intfName1='rP-nat-eth', params1={'ip':'10.0.41.1/24'},
+                intfName2='nat-rP-eth', params2={'ip':'10.0.41.2/24'})
+
     # net.addNAT(name='natP', ip='10.1.3.1').configDefault()
     # net.addNAT(name='natQ', ip='10.2.3.1').configDefault()
     # net.addNAT(name='natR', ip='10.3.3.1').configDefault()
