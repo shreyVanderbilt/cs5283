@@ -18,7 +18,7 @@ class LinuxRouter (Node):
 class NetworkTopo (Topo):
 
     def build(self, **_opts):
-        rP = self.addNode('rP', cls=LinuxRouter, ip='10.1.1.1/24')
+        rP = self.addNode('rP', cls=LinuxRouter, ip='172.16.1.1/24')
         # rQ = self.addNode('rQ', cls=LinuxRouter, ip='10.2.1.1/24')
         # rR = self.addNode('rR', cls=LinuxRouter, ip='10.3.1.1/24')
         # rS = self.addNode('rS', cls=LinuxRouter, ip='10.4.1.1/24')
@@ -34,8 +34,8 @@ class NetworkTopo (Topo):
         # s6 = self.addSwitch('s6') # sU
         # s7 = self.addSwitch('s7') # sV
 
-        hP0 = self.addHost('hP0', ip='172.16.3.0/24', defaultRoute='via 10.1.1.1')
-        hP2 = self.addHost('hP2', ip='172.16.5.0/24', defaultRoute='via 10.1.1.1')
+        hP0 = self.addHost('hP0', ip='172.16.3.0/24', defaultRoute='via 172.16.1.1')
+        hP2 = self.addHost('hP2', ip='172.16.5.0/24', defaultRoute='via 172.16.1.1')
         # hQ0 = self.addHost('hQ0', ip='192.168.10.0/24', defaultRoute='via 10.2.1.1')
         # hR2 = self.addHost('hR2', ip='172.12.0.0/16', defaultRoute='via 10.3.1.1')
         # hU0 = self.addHost('hU0', ip='10.85.10.0/24', defaultRoute='via 10.6.1.1')
@@ -51,7 +51,7 @@ class NetworkTopo (Topo):
         # self.addLink(hV0, s7)
         
         self.addLink(s1, rP,
-                intfName2='rP-s1-eth', params2={'ip':'10.1.1.1/24'})
+                intfName2='rP-s1-eth', params2={'ip':'172.16.1.1/24'})
         # self.addLink(s2, rQ,
         #         intfName2='rQ-sQ-eth', params2={'ip':'10.1.2.1/24'})
         # self.addLink(s3, rR,
@@ -87,7 +87,8 @@ def run():
 
     #NAT & Router P Connection
     info(net['nat1'].cmd('ip route add 10.1.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
-
+    info(net['nat1'].cmd('ip route add 172.16.1.0/24 via 10.0.41.1 dev nat-rP-eth'))
+    
     info(net['rP'].cmd('ip route add default via 10.0.41.1 dev nat-rP-eth'))
 
     #Host & Router P Connection
