@@ -85,62 +85,7 @@ def run():
                 intfName1='rP-nat-eth', params1={'ip':'10.0.41.1/24'},
                 intfName2='nat-rP-eth', params2={'ip':'10.0.41.2/24'})
 
-    # net.addNAT(name='natP', ip='10.1.3.1').configDefault()
-    # net.addNAT(name='natQ', ip='10.2.3.1').configDefault()
-    # net.addNAT(name='natR', ip='10.3.3.1').configDefault()
-    # net.addNAT(name='natS', ip='10.4.3.1').configDefault()
-    # net.addNAT(name='natT', ip='10.5.3.1').configDefault()
-    # net.addNAT(name='natU', ip='10.6.3.1').configDefault()
-    # net.addNAT(name='natV', ip='10.7.3.1').configDefault()
-
-    # net.addLink(net['rP'], net['natP'],
-    #             intfName1='rP-nat-eth', params1={'ip':'10.1.2.1/24'},
-    #             intfName2='nat-rP-eth', params2={'ip':'10.1.2.2/24'})
-    # net.addLink(net['rQ'], net['natQ'],
-    #             intfName1='rQ-nat-eth', params1={'ip':'10.2.2.1/24'},
-    #             intfName2='nat-rQ-eth', params2={'ip':'10.2.2.2/24'})
-    # net.addLink(net['rR'], net['natR'],
-    #             intfName1='rR-nat-eth', params1={'ip':'10.3.2.1/24'},
-    #             intfName2='nat-rR-eth', params2={'ip':'10.3.2.2/24'})
-    # net.addLink(net['rS'], net['natS'],
-    #             intfName1='rS-nat-eth', params1={'ip':'10.4.2.1/24'},
-    #             intfName2='nat-rS-eth', params2={'ip':'10.4.2.2/24'})
-    # net.addLink(net['rT'], net['natT'],
-    #             intfName1='rT-nat-eth', params1={'ip':'10.5.2.1/24'},
-    #             intfName2='nat-rT-eth', params2={'ip':'10.5.2.2/24'})
-    # net.addLink(net['rU'], net['natU'],
-    #             intfName1='rU-nat-eth', params1={'ip':'10.6.2.1/24'},
-    #             intfName2='nat-rU-eth', params2={'ip':'10.6.2.2/24'})
-    # net.addLink(net['rV'], net['natV'],
-    #             intfName1='rV-nat-eth', params1={'ip':'10.7.2.1/24'},
-    #             intfName2='nat-rV-eth', params2={'ip':'10.7.2.2/24'})
-    
-
-    # #NAT 1 Rule Set
-    # info(net['natP'].cmd('ip route add 10.1.1.1/24 via 10.1.2.1 dev nat-rP-eth')) #Allows NAT -> Router
-    # info(net['rP'].cmd('ip route add 10.1.3.0/24 via 10.1.2.2 dev rP-nat-eth')) #Allows Router -> NAT
-
-    # info(net['rP'].cmd('ip route add default via 10.1.2.2 dev rP-nat-eth')) #Allows Router -> External NATs
-
-    # info(net['hP0'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
-    # info(net['hP2'].cmd('ip route add default via 10.1.1.1')) #Allows Host -> Router
-
-    # info(net['natP'].cmd('ip route add default via 192.168.100.2 dev vxlan0')) #Allows NAT -> VxLAN
-
-    # info(net['natP'].cmd('iptables -D FORWARD -i nat1-eth0 -d 10.1.0.0/8 -j DROP'))
-
-    # # #NAT 2 Rule Set
-    # info(net['nat2'].cmd('ip route add 10.2.1.0/24 via 10.2.2.1 dev nat-r2-eth')) #Allows NAT -> Router
-    # info(net['r2'].cmd('ip route add 10.2.3.0/24 via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> NAT
-
-    # info(net['r2'].cmd('ip route add default via 10.2.2.2 dev r2-nat-eth')) #Allows Router -> External NATs
-
-    # info(net['h2'].cmd('ip route add default via 10.2.1.1')) #Allows Host -> Router
-
-    # info(net['nat2'].cmd('ip route add default via 192.168.100.3 dev vxlan0')) #Allows NAT -> VxLAN
-
-    # info(net['nat2'].cmd('iptables -D FORWARD -i nat2-eth0 -d 10.2.0.0/8 -j DROP'))
-
+    info(net['nat1'].cmd('ip route add 10.0.40.0/24 via 10.0.41.1 dev nat-rP-eth'))
     
     info( '*** Starting network\n')
     net.start ()  # this method must be invoked to start the mininet
