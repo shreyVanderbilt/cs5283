@@ -1,0 +1,227 @@
+############## Dictionary of a topology ##########
+#
+# My aim is that this will get generated via some DSML
+# such as the one we can create in our model-driven
+# engineering environment called WebGME (www.webgme.org)
+# and so will generate information that is correct-by-construction.
+# Right now, because it is being created manually, mistakes can still
+# be made. For this triangle topology, things appear to work correctly.
+#
+#######################################
+#
+# Think of this YAML schema as the domain-specific language
+# in which the topology is described. Thereafter, it is fed to a
+# generic back-end orchestration middleware, which generates
+# the desired topology.
+#
+topo:
+  routers:
+    - router: "P"
+      ip: "172.16.3.1/24"  # we allow this to be default out of the two LANs
+      
+    - router: "Q"
+      ip: "192.168.10.1/24"  # this is the onlly LAN attached to Q
+      
+    - router: "R"
+      ip: "172.12.0.1/16"  # this is the only LAN attached to R
+      
+    - router: "S"
+      ip: ""   # S is an intermediate router.  IP assigned later
+      
+    - router: "T"
+      ip: ""   # T is an intermediate router. We will assign it an IP later.
+      
+    - router: "U"
+      ip: "10.85.8.1/24" # We use this LAN as the default
+      
+    - router: "V"
+      ip: "10.100.0.1/16"
+      
+
+  lans:  # We will assume interfaces numbered from 0 per LAN
+            # We will use lan name as prefix of switches and hosts
+    - name: "lan1"
+      router: "P"   # P-eth0
+      subnet: "172.16.3.0/24"
+      hosts: 3
+
+    - name: "lan2"
+      router: "P"  # P-eth1
+      subnet: "172.16.5.0/24"
+      hosts: 2
+
+    - name: "lan3"
+      router: "Q" # Q-eth0
+      subnet: "192.168.10.0/24"
+      hosts: 4
+
+    - name: "lan4"
+      router: "R" # R-eth0
+      subnet: "172.12.0.0/16"
+      hosts: 4
+
+    - name: "lan5"
+      router: "U"  # U-eth0
+      subnet: "10.85.8.0/24"
+      hosts: 3
+
+    - name: "lan6"
+      router: "U"  #U-eth1
+      subnet: "10.85.10.0/24"
+      hosts: 3
+
+    - name: "lan7"
+      router: "V" # V-eth0
+      subnet: "10.100.0.0/16"
+      hosts: 3
+
+    - name: "lan8"   # This is the special LAN comprising P and NAT node
+      router: "P" # P-eth2
+      subnet: "192.168.25.0/24"
+      hosts: 2       # We could or could not have hosts here
+      nat: nat0     # This LAN has a nat node, providing a way outside
+
+  nats:   # All the NATs listed in the LAN specs
+    - name: "nat0"
+      subnets:  # All the subnets who need NAT
+        - "172.16.3.0/24"
+        - "172.16.5.0/24"
+        - "192.168.10.0/24"
+        - "172.12.0.0/16"
+        - "10.85.8.0/24"
+        - "10.85.10.0/24"
+        - "10.100.0.0/16"
+
+  links:  # these are the router to router links where we just use the first addr
+            # to the first endpoint and second to the second endpoint
+            #
+            # ep = end point. I didn't want to call it source and destination
+            # In this topology, since there are one directional links, we
+            # have specified links along the direction. Also, used alphabetical order
+    - ep1-router: "P"  # P-eth3
+      ep2-router: "Q"  # Q-eth1
+      subnet: "10.50.1.0/24"
+      
+    - ep1-router: "Q"  # Q-eth2
+      ep2-router: "S"  # S-eth0
+      subnet: "10.51.1.0/24"
+      
+    - ep1-router: "Q"   # Q-eth3
+      ep2-router: "V"    # V-eth1
+      subnet: "10.52.1.0/24"
+      
+    - ep1-router: "R"  # R-eth1
+      ep2-router: "P"   # P-eth4
+      subnet: "10.53.1.0/24"
+      
+    - ep1-router: "R"  # R-eth2
+      ep2-router: "U"  # U-eth2
+      subnet: "10.54.1.0/24"
+      
+    - ep1-router: "S"  # S-eth1
+      ep2-router: "R"  # R-eth3
+      subnet: "10.55.1.0/24"
+      
+    - ep1-router: "S"  # S-eth2
+      ep2-router: "V"  # V-eth2
+      subnet: "10.56.1.0/24"
+      
+    - ep1-router: "T"  # T-eth0
+      ep2-router: "Q"  # Q-eth4
+      subnet: "10.57.1.0/24"
+      
+    - ep1-router: "U"  # U-eth3
+      ep2-router: "S"  # S-eth3
+      subnet: "10.58.1.0/24"
+      
+    - ep1-router: "V"  # V-eth3
+      ep2-router: "T"  # T-eth1
+      subnet: "10.59.1.0/24"
+      
+    - ep1-router: "V"  # V-eth4
+      ep2-router: "U"  # U-eth4
+      subnet: "10.60.1.0/24"
+      
+  routes:  # routes that are not automatically created. All defaults go
+               # toward P
+    - router: "P"
+      entries:
+        - "192.168.10.0/24 via 10.50.1.2 dev P-eth3" # Q's LAN
+        - "172.12.0.0/16 via 10.50.1.2 dev P-eth3" # R's LAN via Q
+        - "10.85.8.0/22 via 10.50.1.2 dev P-eth3" # U's LANs via Q
+        - "10.100.0.0/16 via 10.50.1.2 dev P-eth3" # V's LAN via Q
+        - "default via 192.168.25.2 dev P-eth2"  # toward nat0 and out
+
+    - router: "Q"
+      entries:
+        - "172.16.0.0/21 via 10.51.1.2 dev Q-eth2" # P's LANs via S
+        - "192.168.25.0/24 via 10.51.1.2 dev Q-eth2" # NAT via s
+        - "172.12.0.0/16 via 10.51.1.2 dev Q-eth2" # R's LAN via S
+        - "10.85.8.0/22 via 10.51.1.2 dev Q-eth2" # U's LANs via S
+        - "10.100.0.0/16 via 10.51.1.2 dev Q-eth2" # V's LAN via S
+        - "default via 10.51.1.2 dev Q-eth2"  # toward S (eventually P)
+
+    - router: "R"
+      entries:
+        - "172.16.0.0/21 via 10.53.1.2 dev R-eth1" # P's LANs via P
+        - "192.168.25.0/24 via 10.53.1.2 dev R-eth1" # NAT via P
+        - "192.168.10.0/24 via 10.53.1.2 dev R-eth1" # Q's LAN via P
+        - "10.85.8.0/22 via 10.54.1.2 dev R-eth2" # U's LANs via R
+        - "10.100.0.0/16 via 10.53.1.2 dev R-eth1" # V's LAN via P
+        - "default via 10.53.1.2 dev R-eth1"  # toward P
+
+    - router: "S"
+      entries:
+        - "172.16.0.0/21 via 10.55.1.2 dev S-eth1" # P's LANs via R
+        - "192.168.25.0/24 via 10.55.1.2 dev S-eth1" # NAT via R
+        - "192.168.10.0/24 via 10.56.1.2 dev S-eth2" # Q's LAN via V
+        - "172.12.0.0/16 via 10.55.1.2 dev S-eth1" # R's LAN via R
+        - "10.85.8.0/22 via 10.56.1.2 dev S-eth2" # U's LANs via V
+        - "10.100.0.0/16 via 10.56.1.2 dev S-eth2" # V's LAN via V
+        - "default via 10.55.1.2 dev S-eth1"  # toward R (eventually P)
+
+    - router: "T"
+      entries:
+        - "172.16.0.0/21 via 10.57.1.2 dev T-eth0" # P's LANs via Q
+        - "192.168.25.0/24 via 10.57.1.2 dev T-eth0" # NAT via Q
+        - "192.168.10.0/24 via 10.57.1.2 dev T-eth0" # Q's LAN via Q
+        - "172.12.0.0/16 via 10.57.1.2 dev T-eth0" # R's LAN via Q
+        - "10.85.8.0/22 via 10.57.1.2 dev T-eth0" # U's LANs via Q
+        - "10.100.0.0/16 via 10.57.1.2 dev T-eth0" # V's LAN via Q
+        - "default via 10.57.1.2 dev T-eth0"  # toward Q (eventually P)
+
+    - router: "U"
+      entries:
+        - "172.16.0.0/21 via 10.58.1.2 dev U-eth3" # P's LANs via S
+        - "192.168.25.0/24 via 10.58.1.2 dev U-eth3" # NAT via S
+        - "192.168.10.0/24 via 10.58.1.2 dev U-eth3" # Q's LAN via S
+        - "172.12.0.0/16 via 10.58.1.2 dev U-eth3" # R's LAN via S
+        - "10.100.0.0/16 via 10.58.1.2 dev U-eth3" # V's LAN via S
+        - "default via 10.58.1.2 dev U-eth3"  # toward S (eventually P)
+
+    - router: "V"
+      entries:
+        - "172.16.0.0/21 via 10.59.1.2 dev V-eth3" # P's LANs via T
+        - "192.168.25.0/24 via 10.59.1.2 dev V-eth3" # NAT via T
+        - "192.168.10.0/24 via 10.59.1.2 dev V-eth3" # Q's LAN via T
+        - "172.12.0.0/16 via 10.59.1.2 dev V-eth3" # R's LAN via T
+        - "10.85.8.0/22 via 10.60.1.2 dev V-eth4" # U's LAN via U
+        - "default via 10.59.1.2 dev V-eth3"  # toward T (eventually P)
+
+    - router: "nat0"
+      entries:   # these entries are so that the NAT can allow traffic from outside and
+                     # route it correctly to the correct LAN.   We do not provide
+                     # the route into its own LAN as it is auto generated
+        - "172.16.0.0/21 via 192.168.25.1 dev nat0-eth0" # Send to P
+        - "192.168.10.0/24 via 192.168.25.1 dev nat0-eth0" # Q's LAN via P
+        - "172.12.0.0/16 via 192.168.25.1 dev nat0-eth0" # R's LAN via P
+        - "10.85.8.0/22 via 192.168.25.1 dev nat0-eth0" # U's LANs via P
+        - "10.100.0.0/16 via 192.168.25.1 dev nat0-eth0" # V's LAN via P
+        # supply the VxLAN rule here as additional entry
+        # Here, we supply routes to networks in the triangle topology
+        # that we wish to reach
+        - "10.10.1.0/24 via 192.168.100.1 dev vxlan0"  # R1's LAN
+        - "10.20.1.0/24 via 192.168.100.1 dev vxlan0"  # R2's LAN
+        - "10.30.1.0/24 via 192.168.100.1 dev vxlan0"  # R3's LAN
+
+    

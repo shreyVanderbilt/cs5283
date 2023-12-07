@@ -1,0 +1,57 @@
+##### Dictionary of a topology ######
+#
+# My aim is that this will be generated via some DSML
+# and so will generate correct stuff. Right now, because it
+# is being created manually, mistakes can still be made
+#
+##################################
+topo:
+  routers:
+    - router: "r1"
+      ip: "10.10.1.1/24"
+      border: False
+      
+    - router: "r2"
+      ip: "172.16.1.1/24"
+      border: False
+
+  lans:  # We will assume interfaces numbered from 0 per LAN
+            # We will use lan name as prefix of switches and hosts
+    - name: "lan1"
+      router: "r1"
+      subnet: "10.10.1.0/24"
+      hosts: 1
+      nat: True
+
+    - name: "lan2"
+      router: "r2"
+      subnet: "172.16.1.0/24"
+      hosts: 1
+      nat: True
+
+  links:  # these are the router to router links where we just use the first addr
+            # to the first endpoint and second to the second endpoint
+            #
+            # ep = end point. I didn't want to call it source and destination
+    - ep1-router: "r1"
+      ep2-router: "r2"
+      subnet: "10.100.1.0/24"
+      
+  routes:  # routes that are not automatically created
+    - router: "r1"
+      route: "default via 10.100.1.2 dev r1-eth1"  # default toward r2
+
+    - router: "r1"
+      route: "172.16.1.0/24 via 10.100.1.2 dev r1-eth1"  # LAN of r2
+
+    - router: "r2"
+      route: "default via 10.100.1.1 dev r2-eth1"   # toward r1
+
+    - router: "r2"
+      route: "10.10.0.0/24 via 10.100.1.1 dev r2-eth1" # LANS of r1
+
+  nat:
+    - name: "nat0"
+      router: "r3"
+      subnet: "192.168.1.0/24"
+      
