@@ -11,35 +11,43 @@ IP ADDRESS FOR VM2: 192.168.5.251
 
 
 We ran the following commands on VM1
-- sudo ip link delete dev vxlan0
-- sudo ufw disable
-- sudo ip link add vxlan0 type vxlan id 100 local 172.31.1.107 remote 172.31.13.110 dev eth0 dstport 4789
-- sudo ip addr add 192.168.100.1/24 dev vxlan0
-- sudo ip link set vxlan0 up
-- sudo ip route add 10.0.2.0/24 via 192.168.100.2 dev vxlan0
+```bash
+sudo ip link delete dev vxlan0
+sudo ufw disable
+sudo ip link add vxlan0 type vxlan id 100 local 172.31.1.107 remote 172.31.13.110 dev eth0 dstport 4789
+sudo ip addr add 192.168.100.1/24 dev vxlan0
+sudo ip link set vxlan0 up
+sudo ip route add 10.0.2.0/24 via 192.168.100.2 dev vxlan0
+```
 
 Similarly we ran the following commands on VM2
-- sudo ip link delete dev vxlan0
-- sudo ufw disable
-- sudo ip link add vxlan0 type vxlan id 100 local 172.31.13.110 remote 172.31.1.107 dev eth0 dstport 4789
-- sudo ip addr add 192.168.100.2/24 dev vxlan0
-- sudo ip link set vxlan0 up
-- sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
+```bash
+sudo ip link delete dev vxlan0
+sudo ufw disable
+sudo ip link add vxlan0 type vxlan id 100 local 172.31.13.110 remote 172.31.1.107 dev eth0 dstport 4789
+sudo ip addr add 192.168.100.2/24 dev vxlan0
+sudo ip link set vxlan0 up
+sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
+```
 
 Next we starting setting up UERANSIM on VM1 by running the following commands
-- git clone https://github.com/aligungr/UERANSIM
-- sudo apt update && sudo apt upgrade
-- sudo apt install make
-- sudo apt install gcc
-- sudo apt install g++
-- sudo apt install libsctp-dev lksctp-tools
-- sudo apt install iproute2
-- sudo snap install cmake --classic
-- cd UERANSIM
-- make 
+```bash
+git clone https://github.com/aligungr/UERANSIM
+sudo apt update && sudo apt upgrade
+sudo apt install make
+sudo apt install gcc
+sudo apt install g++
+sudo apt install libsctp-dev lksctp-tools
+sudo apt install iproute2
+sudo snap install cmake --classic
+cd UERANSIM
+make 
+```
 
 Next we made the necessary changes to the config yaml files and then ran 
-- sudo ./nr-gnb -c ../config/custom-open5gs-gnb.yaml
+``bash
+sudo ./nr-gnb -c ../config/custom-open5gs-gnb.yaml
+```
 ![alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_1.png)
 
 Below are the logs from VM2
