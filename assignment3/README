@@ -42,7 +42,6 @@ Next we made the necessary changes to the config yaml files and then ran
 - sudo ./nr-gnb -c ../config/custom-open5gs-gnb.yaml
 ![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_1.png)
 
-
 Below are the logs from VM2
 ![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_2.png)
 
