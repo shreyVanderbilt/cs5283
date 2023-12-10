@@ -79,7 +79,7 @@ However before we could finish re-installing open5gs v 2.6.6 Chameloen cloud sta
 So we decided to create 2 EC2 instances on AWS under the same subnet and VPC and try to complete the programming assginment there.
 
 We re did all the previously mentioned steps on the 2 EC2 instance and were able to get Open5gs v2.6.6 running. Below is an imaage of the WebUI for Open5gs we were able to get running. 
-![](snapshots/Open5gs_WebUI.png)
+![](https://github.com/shreyVanderbilt/cs5283/blob/main/assignment3/snapshots/MS1_UERANSIM_1.png?raw=true)
 
 However we were not able to setup the VxLan connections on the 2 ECS instance. We ran the following code to get the Vxlan0 setup 
 IP ADDRESS FOR VM1: 172.31.1.107
