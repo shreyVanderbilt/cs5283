@@ -40,11 +40,11 @@ Next we starting setting up UERANSIM on VM1 by running the following commands
 
 Next we made the necessary changes to the config yaml files and then ran 
 - sudo ./nr-gnb -c ../config/custom-open5gs-gnb.yaml
-![Alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_1.png)
+![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_1.png)
 
 
 Below are the logs from VM2
-![Alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_2.png)
+![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/MS1_UERANSIM_2.png)
 
 
 Then we started working on getting Open5gs setup on VM2 by running the following commands
@@ -80,7 +80,7 @@ However before we could finish re-installing open5gs v 2.6.6 Chameloen cloud sta
 So we decided to create 2 EC2 instances on AWS under the same subnet and VPC and try to complete the programming assginment there.
 
 We re did all the previously mentioned steps on the 2 EC2 instance and were able to get Open5gs v2.6.6 running. Below is an imaage of the WebUI for Open5gs we were able to get running. 
-![Alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/Open5gs_WebUI.png)
+![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/Open5gs_WebUI.png)
 
 However we were not able to setup the VxLan connections on the 2 ECS instance. We ran the following code to get the Vxlan0 setup 
 IP ADDRESS FOR VM1: 172.31.1.107
@@ -105,11 +105,11 @@ sudo ip link set vxlan0 up
 sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
  
 EC2_VM1:
-![Alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/EC2_VM1_NETWORK_SETTING.png)
+![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/EC2_VM1_NETWORK_SETTING.png)
 
 
 EC2_VM2: 
-![Alt text](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/EC2_VM2_NETWORK_SETTING.png)
+![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/EC2_VM2_NETWORK_SETTING.png)
 
 
 
