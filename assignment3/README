@@ -1,55 +1,109 @@
-This directory contains code to automate the orchestration of Mininet
-topologies from a specified YAML file. The YAML file in essence serves as
-a declarative specification based on a domain-specific language (DSL).
-Although, as of now, we do not have any concrete and formal specification
-of the DSL, its structure/syntax/semantics should hopefully be clear from
-the example YAML files in this directory.
+Online team 4
+- Shreyank Patel
+- Justin Summer
+- Nelson Torres
 
-Of specific interest to the Computer Networks class are the triangle_topo.yaml
-and hw1prob5_topo.yaml files.   We assume that you already have the vxlan0
-setup with the VM1's endpoint being 192.168.100.1 and VM2's endpoint
-being 192.168.100.2.
 
-The triangle topology has 3 routers: r1, r2 and r3. r1 has two LANs: 10.10.1.0/24
-and 10.10.2.0/24; r2 has LAN 10.20.1.0/24; and r3 has LAN: 10.30.1.0/24.
+Intially we setup VxLan0 on our 2 Chamelon VMS
 
-The hw1prob5 topology is as specified in the HW1 writeup. It has 7 routers with
-LANs as follows:
-P: 172.16.3.0/24, 172.16.5.0/24 and a specially created LAN to connect to NAT node
-Q: 192.168.10.0/24
-R: 172.12.0.0/16
-S: intermediate router
-T: intermediate router
-U: 10.85.8.0/24 and 10.85.10.0/24
-V: 10.100.0.0/16
+IP ADDRESS FOR VM1: 192.168.5.162
+IP ADDRESS FOR VM2: 192.168.5.251
 
-We use special naming conventions where we add prefix lan1, lan2 ... before
-host numbers h1, h2, .... Thus, P has LANs lan1, lan2, lan3. The same logic
-also applies to the triangle topology. Please issue the "net", "nodes" and "dump"
-commands on the Mininet prompt to see the details of the topologies.
 
-To get your networks and routing rules setup, run the following commands:
+We ran the following commands on VM1
+- sudo ip link delete dev vxlan0
+- sudo ufw disable
+- sudo ip link add vxlan0 type vxlan id 100 local 172.31.1.107 remote 172.31.13.110 dev eth0 dstport 4789
+- sudo ip addr add 192.168.100.1/24 dev vxlan0
+- sudo ip link set vxlan0 up
+- sudo ip route add 10.0.2.0/24 via 192.168.100.2 dev vxlan0
 
-On VM1:
+Similarly we ran the following commands on VM2
+- sudo ip link delete dev vxlan0
+- sudo ufw disable
+- sudo ip link add vxlan0 type vxlan id 100 local 172.31.13.110 remote 172.31.1.107 dev eth0 dstport 4789
+- sudo ip addr add 192.168.100.2/24 dev vxlan0
+- sudo ip link set vxlan0 up
+- sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
 
-sudo python3 custom_net.py -y triangle_topo.yaml
+Next we starting setting up UERANSIM on VM1 by running the following commands
+- git clone https://github.com/aligungr/UERANSIM
+- sudo apt update && sudo apt upgrade
+- sudo apt install make
+- sudo apt install gcc
+- sudo apt install g++
+- sudo apt install libsctp-dev lksctp-tools
+- sudo apt install iproute2
+- sudo snap install cmake --classic
+- cd UERANSIM
+- make 
 
-On VM2:
+Next we made the necessary changes to the config yaml files and then ran 
+- sudo ./nr-gnb -c ../config/custom-open5gs-gnb.yaml
+#add image
 
-sudo python3 custom_net.py -y hw1prob5_topo.yaml
 
-You can try pinging from one mininet to other. For example, you
-can try on Mininet 1,
+Below are the logs from VM2
+#add image
 
-lan1h1 ping 10.85.8.2
 
-or
+Then we started working on getting Open5gs setup on VM2 by running the following commands
 
-from VM2 Mininet,
+- curl -fsSL https://pgp.mongodb.com/server-6.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
 
-lan7h2 ping 10.20.1.3
+- echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+- sudo apt update
+- sudo apt install -y mongodb-org
+- sudo systemctl start mongod
+- sudo systemctl status mongod.service
+- sudo systemctl enable mongod
+#Open5gs
+- sudo add-apt-repository ppa:open5gs/latest
+- sudo apt update
+- sudo apt install open5gs
+#WebUI
+- sudo apt update
+- sudo apt install -y ca-certificates curl gnupg
+- sudo mkdir -p /etc/apt/keyrings
+- curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+- NODE_MAJOR=20
+-  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+- sudo apt update
+- sudo apt install nodejs -y
+- curl -fsSL https://open5gs.org/open5gs/assets/webui/install | sudo -E bash -
 
-or some such combinations.
+Unfortunately, there were issues running the latest version of open5gs (v2.7.0) so we have to remove and reinstall open5gs v2.6.6.
 
-You can then use these topologies for your PA3.
+However before we could finish re-installing open5gs v 2.6.6 Chameloen cloud started to experience outages. 
+
+
+So we decided to create 2 EC2 instances on AWS under the same subnet and VPC and try to complete the programming assginment there.
+
+We re did all the previously mentioned steps on the 2 EC2 instance and were able to get Open5gs v2.6.6 running. Below is an imaage of the WebUI for Open5gs we were able to get running. 
+#add picture
+
+However we were not able to setup the VxLan connections on the 2 ECS instance. We ran the following code to get the Vxlan0 setup 
+
+IP ADDRESS FOR VM1: 172.31.1.107
+IP ADDRESS FOR VM2: 172.31.13.110
+
+# Helper commands
+sudo ip link delete dev vxlan0 # if you need to delete the VxLAN
+sudo ufw disable # to help clean up the iptables
+
+
+From VM1 enter the following commands:
+sudo ip link add vxlan0 type vxlan id 100 local 172.31.1.107 remote 172.31.13.110 dev ens3 dstport 4789
+sudo ip addr add 192.168.100.1/24 dev vxlan0
+sudo ip link set vxlan0 up
+sudo ip route add 10.0.2.0/24 via 192.168.100.2 dev vxlan0
+
+From VM2 enter the following commands:
+
+sudo ip link add vxlan0 type vxlan id 100 local 172.31.13.110 remote 172.31.1.107 dev ens3 dstport 4789
+sudo ip addr add 192.168.100.2/24 dev vxlan0
+sudo ip link set vxlan0 up
+sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
+ 
+
 
