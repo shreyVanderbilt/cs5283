@@ -86,7 +86,55 @@ However before we could finish re-installing open5gs v 2.6.6 Chameloen cloud sta
 
 So we decided to create 2 EC2 instances on AWS under the same subnet and VPC and try to complete the programming assginment there.
 
-We re did all the previously mentioned steps on the 2 EC2 instance and were able to get Open5gs v2.6.6 running. Below is an imaage of the WebUI for Open5gs we were able to get running. 
+We re did all the previously mentioned steps on the 2 EC2 instance and were able to get Open5gs v2.6.6 running.
+
+Except we had to run different commands to get open5gs v2.6.6 setup. We ran the following commands
+```bash
+#Open5gs Setup
+git clone -branch v2.6.6 https://github.com/open5gs/open5gs
+cd open5gs
+meson build --prefix=`pwd`/install
+ninja -C build
+cd build
+ninja install
+cd ../
+./install/bin/open5gs-nrfd &
+./install/bin/open5gs-scpd &
+./install/bin/open5gs-amfd &
+./install/bin/open5gs-smfd &
+./install/bin/open5gs-upfd &
+./install/bin/open5gs-ausfd &
+./install/bin/open5gs-udmd &
+./install/bin/open5gs-pcfd &
+./install/bin/open5gs-nssfd &
+./install/bin/open5gs-bsfd &
+./install/bin/open5gs-udrd &
+./install/bin/open5gs-mmed &
+./install/bin/open5gs-sgwcd &
+./install/bin/open5gs-sgwud &
+./install/bin/open5gs-hssd &
+./install/bin/open5gs-pcrfd &
+
+#WebUI Setup
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+NODE_MAJOR=20
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+sudo apt update
+sudo apt install nodejs -y
+
+cd webui
+npm ci
+
+ssh -i "vm_computer_network.pem" ubuntu@ec2-3-92-18-149.compute-1.amazonaws.com
+```
+
+
+Below is an imaage of the WebUI for Open5gs we were able to get running. 
 ![image](https://raw.githubusercontent.com/shreyVanderbilt/cs5283/main/assignment3/snapshots/Open5gs_WebUI.png)
 
 However we were not able to setup the VxLan connections on the 2 ECS instance. We ran the following code to get the Vxlan0 setup 
