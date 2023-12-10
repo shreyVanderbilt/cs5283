@@ -104,11 +104,11 @@ sudo ip link set vxlan0 up
 sudo ip route add 10.0.1.0/24 via 192.168.100.1 dev vxlan0
  
 EC2_VM1:
-![alt text](https://github.com/shreyVanderbilt/cs5283/blob/main/assignment3/snapshots/EC2_VM1_NETWORK_SETTING.png?raw=true)
+![alt text](https://github.com/shreyVanderbilt/cs5283/blob/main/assignment3/snapshots/EC2_VM1_NETWORK_SETTING.png)
 
 
 EC2_VM2: 
-![alt text](https://github.com/shreyVanderbilt/cs5283/blob/main/assignment3/snapshots/EC2_VM2_NETWORK_SETTING.png?raw=true)
+![alt text](https://github.com/shreyVanderbilt/cs5283/blob/main/assignment3/snapshots/EC2_VM2_NETWORK_SETTING.png)
 
 
 
